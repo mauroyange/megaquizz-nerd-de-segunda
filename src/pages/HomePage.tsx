@@ -4,6 +4,9 @@ import { Button, NdsLogo, Wordmark } from '../components/ui';
 import { completedCount, hasAnyProgress, nextEpisodeId } from '../game/progress';
 import { getEpisode, EPISODES } from '../data/episodes';
 import arcade from '../assets/arcade.webp';
+import { PixelIcon } from '../components/PixelIcon';
+import { useInstallPrompt } from '../hooks/useInstallPrompt';
+import { APK_URL, isNativeApp } from '../utils/platform';
 
 interface Props {
   progress: ProgressState;
@@ -17,6 +20,8 @@ export function HomePage({ progress, go, update }: Props) {
   const next = getEpisode(nextId);
   const done = completedCount(progress);
   const unlockedAch = Object.keys(progress.achievements).length;
+  const { canInstall, install } = useInstallPrompt();
+  const native = isNativeApp();
 
   return (
     <section className="home">
@@ -44,6 +49,18 @@ export function HomePage({ progress, go, update }: Props) {
           <Button variant="ghost" icon="question" onClick={() => go({ name: 'how' })}>Como jogar</Button>
           <Button variant="ghost" icon="trophy" onClick={() => go({ name: 'profile' })}>Recordes e conquistas</Button>
         </div>
+
+        {!native && (
+          <div className="home-install">
+            {canInstall && (
+              <Button variant="secondary" icon="star" onClick={install}>Instalar app</Button>
+            )}
+            <a className="btn btn-ghost" href={APK_URL} target="_blank" rel="noopener">
+              <PixelIcon name="robot" size={18} />
+              <span>App Android (APK)</span>
+            </a>
+          </div>
+        )}
 
         {resume && (
           <dl className="home-stats">

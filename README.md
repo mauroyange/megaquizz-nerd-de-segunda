@@ -28,6 +28,34 @@ Cada push para `main` publica o jogo automaticamente no **GitHub Pages** (`.gith
 
 A pasta `dist/` também pode ser alojada em qualquer servidor estático (Netlify, Vercel, GitHub Pages, cPanel…).
 
+## App instalável
+
+### PWA (instalar a partir do site)
+
+O site é uma PWA: no Chrome/Edge do Android ou do computador aparece **"Instalar aplicação"** (e o botão **Instalar app** no ecrã inicial do jogo). No iPhone: Safari → Partilhar → **Adicionar ao ecrã principal**. Depois da primeira visita, o jogo funciona **sem internet** (service worker em `public/sw.js`). As fontes estão incluídas no projecto (`@fontsource`), sem dependência do Google Fonts.
+
+### APK Android (Capacitor)
+
+A pasta `android/` é o projecto Android gerado pelo [Capacitor](https://capacitorjs.com) (`capacitor.config.ts`, id `ao.nerddesegunda.megaquizz`). Cada push para `main` corre `.github/workflows/android.yml`, que testa, compila e publica em **GitHub Releases**:
+
+- `MegaQuizz.apk` — para instalar directamente no telemóvel.
+- `MegaQuizz.aab` — formato exigido pela Google Play.
+
+Link fixo para o APK mais recente: https://github.com/mauroyange/megaquizz-nerd-de-segunda/releases/latest/download/MegaQuizz.apk
+
+Para instalar: abrir o link no telemóvel, descarregar, abrir o ficheiro e autorizar "instalar apps desconhecidas" quando o Android pedir. Versões novas instalam-se por cima, sem perder o progresso.
+
+**Assinatura.** Sem configuração, o APK é assinado com a chave de teste `android/app/megaquizz-test.keystore` (incluída de propósito, para que as actualizações se instalem por cima). Para a Google Play é obrigatório usar uma chave privada própria: guarda o ficheiro `.jks` num local seguro e adiciona em *Settings → Secrets and variables → Actions* os segredos `ANDROID_KEYSTORE_BASE64` (o `.jks` em base64), `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS` e `ANDROID_KEY_PASSWORD`. A partir daí o workflow usa essa chave. Nota: a mudança de chave obriga a desinstalar uma vez a versão de teste.
+
+Compilar localmente (precisa de Android Studio / Android SDK e Java 21):
+
+```bash
+npm run build && npx cap sync android
+cd android && ./gradlew assembleRelease   # APK em android/app/build/outputs/apk/release/
+```
+
+Ícones e ecrã de abertura: gerados a partir do logótipo com `node scripts/make-icons.cjs` (originais em `resources/`).
+
 ## O que está implementado
 
 | Área | Estado |
@@ -46,6 +74,9 @@ A pasta `dist/` também pode ser alojada em qualquer servidor estático (Netlify
 | Efeitos sonoros 8-bit (desligáveis) | Completo |
 | Teclado (1–4 / A–D, Enter), foco visível, `prefers-reduced-motion` | Completo |
 | Responsivo: telemóvel, tablet e computador | Completo |
+| PWA instalável e jogável offline | Completo |
+| App Android (APK/AAB) gerada automaticamente | Completo |
+| Publicação na Google Play | Pendente (exige conta de programador e chave própria) |
 
 ## Regras e valores (editáveis em `src/game/config.ts`)
 

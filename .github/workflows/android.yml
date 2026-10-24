@@ -1,0 +1,82 @@
+# Compila a app Android (APK + AAB) e publica-a em GitHub Releases a cada push para main.
+# O APK mais recente fica sempre em:
+# https://github.com/mauroyange/megaquizz-nerd-de-segunda/releases/latest/download/MegaQuizz.apk
+name: App Android
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: android
+  cancel-in-progress: true
+
+jobs:
+  android:
+    runs-on: ubuntu-latest
+    env:
+      VERSION_CODE: ${{ github.run_number }}
+      VERSION_NAME: 1.0.${{ github.run_number }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - uses: android-actions/setup-android@v3
+
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
+      - run: npx cap sync android
+
+      # Se existirem os segredos da chave definitiva, usa-os; senão fica a chave de teste.
+      - name: Preparar chave de assinatura
+        env:
+          KEYSTORE_B64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+        run: |
+          if [ -n "$KEYSTORE_B64" ]; then
+            echo "$KEYSTORE_B64" | base64 -d > "$RUNNER_TEMP/release.jks"
+            echo "ANDROID_KEYSTORE_PATH=$RUNNER_TEMP/release.jks" >> "$GITHUB_ENV"
+            echo "Assinatura: chave definitiva"
+          else
+            echo "Assinatura: chave de teste"
+          fi
+
+      - name: Compilar APK e AAB
+        working-directory: android
+        env:
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleRelease bundleRelease --no-daemon
+          mkdir -p ../release
+          cp app/build/outputs/apk/release/app-release.apk ../release/MegaQuizz.apk
+          cp app/build/outputs/bundle/release/app-release.aab ../release/MegaQuizz.aab
+
+      - name: Publicar em GitHub Releases
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG="v${VERSION_NAME}"
+          gh release create "$TAG" release/MegaQuizz.apk release/MegaQuizz.aab \
+            --title "MegaQuizz ${VERSION_NAME}" \
+            --notes "Versão ${VERSION_NAME} do MegaQuizz by Nerd de Segunda para Android.
+
+          **Instalar:** descarrega \`MegaQuizz.apk\` no telemóvel, abre o ficheiro e autoriza a instalação de fontes desconhecidas quando o Android pedir.
+
+          \`MegaQuizz.aab\` é o formato para a Google Play." \
+            --latest

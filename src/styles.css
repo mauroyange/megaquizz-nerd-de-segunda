@@ -154,6 +154,8 @@ h1[tabindex="-1"]:focus, h2[tabindex="-1"]:focus { outline: none; }
 .home-lede { color: var(--muted); max-width: 52ch; }
 .home-actions { display: flex; flex-wrap: wrap; gap: 12px; }
 .home-actions .btn-primary { min-height: 56px; font-size: 1.1rem; padding-inline: 26px; }
+.home-install { display: flex; flex-wrap: wrap; gap: 10px; }
+.home-install .btn { min-height: 42px; font-size: 0.85rem; padding: 8px 14px; text-decoration: none; }
 .home-stats { display: flex; gap: 0; margin: 0; border: 2px solid var(--line); width: fit-content; max-width: 100%; }
 .home-stats > div { padding: 8px 16px; border-right: 2px solid var(--line); }
 .home-stats > div:last-child { border-right: 0; }
