@@ -67,10 +67,19 @@ jobs:
           ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
         run: |
           chmod +x gradlew
-          ./gradlew assembleRelease bundleRelease --no-daemon
+          set -o pipefail
+          ./gradlew assembleRelease bundleRelease --no-daemon 2>&1 | tee "$RUNNER_TEMP/gradle.log"
           mkdir -p ../release
           cp app/build/outputs/apk/release/app-release.apk ../release/MegaQuizz.apk
           cp app/build/outputs/bundle/release/app-release.aab ../release/MegaQuizz.aab
+
+      # Mostra o erro do Gradle como anotação (visível sem abrir os logs).
+      - name: Resumo do erro de compilação
+        if: failure()
+        run: |
+          [ -f "$RUNNER_TEMP/gradle.log" ] || exit 0
+          msg=$( (grep -A25 "What went wrong" "$RUNNER_TEMP/gradle.log" || tail -40 "$RUNNER_TEMP/gradle.log") | head -40 | sed ':a;N;$!ba;s/%/%25/g;s/\r//g;s/\n/%0A/g')
+          echo "::error title=Gradle::${msg}"
 
       - name: Publicar em GitHub Releases
         env:
