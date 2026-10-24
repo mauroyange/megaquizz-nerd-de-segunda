@@ -24,7 +24,9 @@ npm run build && npx vite preview --port 4173 &
 node scripts/e2e.cjs   # capturas de ecrã em e2e-shots/
 ```
 
-A pasta `dist/` pode ser alojada em qualquer servidor estático (Netlify, Vercel, GitHub Pages, cPanel…).
+Cada push para `main` publica o jogo automaticamente no **GitHub Pages** (`.github/workflows/deploy.yml`), em `https://<utilizador>.github.io/<repositório>/`. Na primeira vez, confirma em *Settings → Pages* que a fonte é "GitHub Actions".
+
+A pasta `dist/` também pode ser alojada em qualquer servidor estático (Netlify, Vercel, GitHub Pages, cPanel…).
 
 ## O que está implementado
 
