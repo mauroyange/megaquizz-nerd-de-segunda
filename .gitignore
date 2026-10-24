@@ -1,0 +1,7 @@
+node_modules
+dist
+dist-artifact
+e2e-shots
+*.log
+*.zip
+*.tsbuildinfo
