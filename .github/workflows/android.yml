@@ -61,10 +61,12 @@ jobs:
 
       - name: Compilar APK e AAB
         working-directory: android
+        # Segredos necessários: ANDROID_KEYSTORE_BASE64 e ANDROID_KEYSTORE_PASSWORD.
+        # O alias e a password da chave são opcionais (por omissão: "megaquizz" e a mesma password).
         env:
           ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
-          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
-          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS || 'megaquizz' }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD || secrets.ANDROID_KEYSTORE_PASSWORD }}
         run: |
           chmod +x gradlew
           set -o pipefail
