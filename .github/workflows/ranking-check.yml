@@ -1,0 +1,32 @@
+# Verificação manual do servidor do ranking (Google Apps Script).
+# Lê o ranking e, opcionalmente, envia uma pontuação de teste. Resultado nas anotações.
+name: Verificar ranking
+
+on:
+  workflow_dispatch:
+    inputs:
+      post_test:
+        description: Enviar uma pontuação de teste
+        type: boolean
+        default: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Ler e testar o servidor
+        env:
+          POST_TEST: ${{ inputs.post_test }}
+        run: |
+          URL=$(grep -o "https://script.google.com/macros/s/[A-Za-z0-9_-]*/exec" src/game/config.ts | head -1)
+          echo "Servidor: $URL"
+          GET=$(curl -sS -L --max-time 60 "$URL?limit=5" | head -c 900)
+          echo "::notice title=GET ranking::${GET}"
+          if [ "$POST_TEST" = "true" ]; then
+            BODY='{"id":"teste-ci-0000000000000000","name":"Teste CI (apagar)","episodes":{"1":{"best":100,"completed":true}}}'
+            POST=$(curl -sS -L --max-time 60 -H "Content-Type: text/plain;charset=utf-8" --data "$BODY" "$URL" | head -c 900)
+            echo "::notice title=POST teste::${POST}"
+            GET2=$(curl -sS -L --max-time 60 "$URL?limit=5&id=teste-ci-0000000000000000" | head -c 900)
+            echo "::notice title=GET depois do teste::${GET2}"
+          fi

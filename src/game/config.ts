@@ -64,5 +64,7 @@ export const MODE_LABEL: Record<GameMode, string> = {
  * Google Apps Script (server/ranking.gs). Vazio = ranking ainda não activo.
  */
 export const ONLINE = {
-  rankingUrl: (import.meta.env.VITE_RANKING_URL as string | undefined) ?? '',
+  rankingUrl:
+    (import.meta.env.VITE_RANKING_URL as string | undefined) ??
+    'https://script.google.com/macros/s/AKfycbybY1d1c6SlTA5hcFxh3v3kKlIWK0HVuY9PHKiXmSnoG6bi_QbVXlcAT4AfRndqgnDbUA/exec',
 };
