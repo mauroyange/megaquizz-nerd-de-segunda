@@ -1,10 +1,13 @@
 import { useState } from 'react';
 import type { ProgressState } from '../types';
 import { ShareDialog } from '../components/ShareDialog';
+import { RankingSubmit } from '../components/RankingSubmit';
+import { totalEpisodePoints } from '../game/progress';
 import type { StoryData } from '../share/storyImage';
 import type { PlayConfig, ResultData, Screen } from '../App';
 import { getEpisode, EPISODES } from '../data/episodes';
 import { isUnlocked } from '../game/progress';
+import { isModeAvailable } from '../game/availability';
 import { DIFFICULTY_LABEL, MODE_LABEL, RULES } from '../game/config';
 import { Button, ScreenHeader } from '../components/ui';
 import { PixelIcon } from '../components/PixelIcon';
@@ -129,6 +132,12 @@ export function ResultsPage({ data, progress, go, play, update }: Props) {
             />
           </label>
         )}
+        {config.mode === 'episode' && (
+          <div className="share-rank">
+            <p className="share-total">Pontos acumulados nos episódios: <b>{totalEpisodePoints(progress)}</b></p>
+            <RankingSubmit progress={progress} auto onOpenRanking={() => go({ name: 'ranking' })} />
+          </div>
+        )}
         <div className="share-cta">
           <Button variant="primary" icon="star" onClick={() => setSharing(true)}>Partilhar resultado</Button>
           <p>Gera uma imagem para os stories ou para enviar a um amigo.</p>
@@ -161,7 +170,9 @@ export function ResultsPage({ data, progress, go, play, update }: Props) {
       )}
 
       <div className="result-actions">
-        <Button variant="primary" icon="play" onClick={() => play(config)}>{isDuel ? 'Desforra' : 'Jogar novamente'}</Button>
+        {isModeAvailable(config.mode) && (
+          <Button variant="primary" icon="play" onClick={() => play(config)}>{isDuel ? 'Desforra' : 'Jogar novamente'}</Button>
+        )}
         {canNext && nextEp && (
           <Button variant="secondary" icon="bolt" onClick={() => play({ mode: 'episode', episodeId: nextEp.id })}>
             Próximo nível · Ep. #{nextEp.episodeNumber}

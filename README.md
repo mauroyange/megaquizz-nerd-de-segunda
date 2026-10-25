@@ -28,6 +28,17 @@ Cada push para `main` publica o jogo automaticamente no **GitHub Pages** (`.gith
 
 A pasta `dist/` também pode ser alojada em qualquer servidor estático (Netlify, Vercel, GitHub Pages, cPanel…).
 
+## Ranking geral online (Modo Episódios)
+
+- **Pontos acumulados** = soma da melhor pontuação de cada episódio (repetir só conta se bater o recorde desse episódio). Aparecem no mapa, no ecrã inicial, nos resultados e no ecrã **Ranking geral**.
+- O jogador entra no ranking com o nome que escolhe; o jogo envia apenas esse nome, um identificador anónimo aleatório e as pontuações dos episódios.
+- **Servidor:** Google Apps Script (`server/ranking.gs`) a gravar na folha *MegaQuizz — Ranking Geral* (Drive, pasta Jogo). O servidor limita cada episódio ao máximo teórico (2725 pts), nunca baixa uma pontuação e aceita um envio a cada 5 s por jogador. Não é à prova de batota de quem saiba programar; para prémios, confirmar os primeiros lugares manualmente.
+- **Activar:** publicar o script como aplicação web (acesso "Qualquer pessoa") e colocar o endereço `/exec` em `ONLINE.rankingUrl` (`src/game/config.ts`). Enquanto estiver vazio, o jogo mostra "ranking em preparação". Para testes locais: `VITE_RANKING_URL=... npm run build` e `node scripts/e2e-ranking.cjs` (usa um servidor simulado).
+
+## Pausas temporárias de modos
+
+`src/game/availability.ts` define períodos em que um modo fica inactivo (os cartões aparecem bloqueados com a data de regresso). Fora do período, o modo volta sozinho. Actualmente: Relâmpago, Sobrevivência e Duelo inactivos até **29/10/2026 às 14h00** (hora de Luanda).
+
 ## Partilha do resultado
 
 No ecrã de resultados, o jogador escreve o nome (fica guardado no dispositivo) e carrega em **Partilhar resultado**. O jogo gera uma imagem vertical 1080×1920 (`src/share/storyImage.ts`) com o logótipo, a pontuação, as estatísticas, as conquistas e o link do jogo.
@@ -72,7 +83,8 @@ cd android && ./gradlew assembleRelease   # APK em android/app/build/outputs/apk
 | Desafio Relâmpago (10 perguntas de todos os temas) | Completo |
 | Modo Sobrevivência (até ao primeiro erro, dificuldade crescente) | Completo |
 | Duelo Nerd local (2 jogadores, mesmo dispositivo, à vez) | Completo |
-| Duelo online e rankings globais | Pendente (arquitectura preparada, não aparece como activo) |
+| Ranking geral online (Modo Episódios) | Completo (servidor Google Apps Script) |
+| Duelo online | Pendente |
 | 3 dificuldades: Casual, Nerd, Modo Lenda | Completo |
 | Temporizador de 20–30 s, pausa no diálogo de saída | Completo |
 | Pontuação: certa, rapidez, sequência, conclusão, multiplicador | Completo |

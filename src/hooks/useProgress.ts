@@ -18,7 +18,7 @@ export function useProgress() {
 
   const reset = useCallback(() => {
     clearProgress();
-    setProgress((p) => ({ ...createInitialProgress(), settings: p.settings }));
+    setProgress((p) => ({ ...createInitialProgress(), settings: p.settings, playerId: p.playerId }));
   }, []);
 
   return { progress, update, reset, canSave };

@@ -58,3 +58,11 @@ export const MODE_LABEL: Record<GameMode, string> = {
   sobrevivencia: 'Modo Sobrevivência',
   duelo: 'Duelo Nerd',
 };
+
+/**
+ * Ranking geral online (só Modo Episódios). Endereço da aplicação web do
+ * Google Apps Script (server/ranking.gs). Vazio = ranking ainda não activo.
+ */
+export const ONLINE = {
+  rankingUrl: (import.meta.env.VITE_RANKING_URL as string | undefined) ?? '',
+};

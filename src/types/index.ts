@@ -128,6 +128,8 @@ export interface ProgressState {
     playerName: string;
   };
   lastEpisodeId: number | null;
+  /** Identificador anónimo e aleatório, usado só para o ranking online. */
+  playerId: string;
 }
 
 export interface SessionSummary {

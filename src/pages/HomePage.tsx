@@ -1,7 +1,7 @@
 import type { ProgressState } from '../types';
 import type { Screen } from '../App';
 import { Button, NdsLogo, Wordmark } from '../components/ui';
-import { completedCount, hasAnyProgress, nextEpisodeId } from '../game/progress';
+import { completedCount, hasAnyProgress, nextEpisodeId, totalEpisodePoints } from '../game/progress';
 import { getEpisode, EPISODES } from '../data/episodes';
 import arcade from '../assets/arcade.webp';
 import { PixelIcon } from '../components/PixelIcon';
@@ -47,6 +47,7 @@ export function HomePage({ progress, go, update }: Props) {
             </Button>
           )}
           <Button variant="ghost" icon="question" onClick={() => go({ name: 'how' })}>Como jogar</Button>
+          <Button variant="ghost" icon="crown" onClick={() => go({ name: 'ranking' })}>Ranking geral</Button>
           <Button variant="ghost" icon="trophy" onClick={() => go({ name: 'profile' })}>Recordes e conquistas</Button>
         </div>
 
@@ -65,7 +66,7 @@ export function HomePage({ progress, go, update }: Props) {
         {resume && (
           <dl className="home-stats">
             <div><dt>Episódios</dt><dd>{done}/{EPISODES.length}</dd></div>
-            <div><dt>Relâmpago</dt><dd>{progress.records.relampago}</dd></div>
+            <div><dt>Pontos acumulados</dt><dd>{totalEpisodePoints(progress)}</dd></div>
             <div><dt>Conquistas</dt><dd>{unlockedAch}</dd></div>
           </dl>
         )}

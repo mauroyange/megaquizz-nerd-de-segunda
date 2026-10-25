@@ -6,6 +6,8 @@ import { DifficultyPicker } from '../components/DifficultyPicker';
 import { completedCount } from '../game/progress';
 import { EPISODES } from '../data/episodes';
 import { RULES } from '../game/config';
+import { activePause, formatReturn } from '../game/availability';
+import type { GameMode } from '../types';
 
 interface Props {
   progress: ProgressState;
@@ -14,7 +16,7 @@ interface Props {
 }
 
 interface ModeCard {
-  id: string;
+  id: GameMode;
   title: string;
   icon: IconName;
   tone: string;
@@ -74,12 +76,21 @@ export function ModesPage({ progress, go, play }: Props) {
       <DifficultyPicker />
       <div className="mode-grid">
         {modes.map((m) => (
-          <article key={m.id} className={`mode-card tone-border-${m.tone}`}>
+          <article key={m.id} className={`mode-card tone-border-${m.tone} ${activePause(m.id) ? 'paused' : ''}`}>
             <div className="mode-icon"><PixelIcon name={m.icon} size={40} color={`var(--${m.tone})`} /></div>
             <h2>{m.title}</h2>
             <p>{m.body}</p>
             <p className="mode-stat">{m.stat}</p>
-            <Button variant={m.id === 'episode' ? 'primary' : 'secondary'} onClick={m.action}>{m.cta}</Button>
+            {activePause(m.id) ? (
+              <>
+                <p className="mode-paused" role="note">
+                  <PixelIcon name="lock" size={14} /> Inactivo até {formatReturn(activePause(m.id)!.until)}. {activePause(m.id)!.reason}.
+                </p>
+                <Button variant="secondary" icon="lock" disabled>Volta em breve</Button>
+              </>
+            ) : (
+              <Button variant={m.id === 'episode' ? 'primary' : 'secondary'} onClick={m.action}>{m.cta}</Button>
+            )}
           </article>
         ))}
       </div>

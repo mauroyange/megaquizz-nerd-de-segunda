@@ -12,10 +12,12 @@ import { ResultsPage } from './pages/ResultsPage';
 import { ProfilePage } from './pages/ProfilePage';
 import { HowToPlayPage } from './pages/HowToPlayPage';
 import { DuelSetupPage } from './pages/DuelSetupPage';
+import { RankingPage } from './pages/RankingPage';
 import { PixelCorners } from './components/ui';
 import { AchievementToasts } from './components/AchievementToasts';
 import { DifficultyContext } from './components/DifficultyPicker';
 import { sfx } from './utils/sound';
+import { isModeAvailable } from './game/availability';
 
 export interface PlayConfig {
   mode: GameMode;
@@ -39,6 +41,7 @@ export type Screen =
   | { name: 'how' }
   | { name: 'profile' }
   | { name: 'duelSetup' }
+  | { name: 'ranking' }
   | { name: 'play'; config: PlayConfig; runId: number }
   | { name: 'results'; data: ResultData };
 
@@ -52,7 +55,14 @@ export default function App() {
     window.scrollTo({ top: 0 });
   }, []);
 
-  const play = useCallback((config: PlayConfig) => go({ name: 'play', config, runId: Date.now() }), [go]);
+  const play = useCallback(
+    (config: PlayConfig) => {
+      // Modos em pausa temporária não arrancam, mesmo vindos de outro ecrã.
+      if (!isModeAvailable(config.mode)) return go({ name: 'modes' });
+      go({ name: 'play', config, runId: Date.now() });
+    },
+    [go],
+  );
 
   // Move o foco para o título de cada ecrã novo (navegação por teclado / leitores de ecrã).
   useEffect(() => {
@@ -113,7 +123,10 @@ export default function App() {
       page = <ProfilePage progress={progress} go={go} reset={reset} canSave={canSave} />;
       break;
     case 'duelSetup':
-      page = <DuelSetupPage go={go} play={play} />;
+      page = isModeAvailable('duelo') ? <DuelSetupPage go={go} play={play} /> : <ModesPage progress={progress} go={go} play={play} />;
+      break;
+    case 'ranking':
+      page = <RankingPage progress={progress} go={go} update={update} />;
       break;
     case 'play':
       page = (

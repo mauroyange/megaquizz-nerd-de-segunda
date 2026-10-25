@@ -3,7 +3,7 @@ import type { ProgressState } from '../types';
 import type { PlayConfig, Screen } from '../App';
 import { EPISODES } from '../data/episodes';
 import { questionCount } from '../data/repository';
-import { completedCount, completionPercent, episodeProgress, episodeStatus } from '../game/progress';
+import { completedCount, completionPercent, episodeProgress, episodeStatus, totalEpisodePoints } from '../game/progress';
 import { DIFFICULTY_LABEL, RULES } from '../game/config';
 import { Button, Chip, ProgressBar, ScreenHeader } from '../components/ui';
 import { PixelIcon } from '../components/PixelIcon';
@@ -42,6 +42,13 @@ export function LevelMapPage({ progress, go, play, focusId }: Props) {
             <b>{done}/{EPISODES.length} episódios</b>
           </div>
           <ProgressBar value={(done / EPISODES.length) * 100} label="Episódios concluídos" />
+          <div className="map-total">
+            <div>
+              <span>Pontos acumulados</span>
+              <b>{totalEpisodePoints(progress)}</b>
+            </div>
+            <Button variant="ghost" icon="crown" onClick={() => go({ name: 'ranking' })}>Ranking geral</Button>
+          </div>
           <p className="map-rule">Acerta {Math.round(RULES.passAccuracy * 100)}% ou mais para concluir um episódio e abrir o seguinte.</p>
         </div>
         <DifficultyPicker />

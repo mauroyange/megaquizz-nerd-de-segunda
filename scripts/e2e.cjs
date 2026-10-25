@@ -93,14 +93,24 @@ async function answerCurrent(page, correct) {
   await page.waitForSelector('.trail');
   ok((await page.locator('.ep-card.status-completed').count()) === 1 && (await page.locator('.ep-card.status-unlocked').count()) === 1, 'Depois de recarregar: nível 1 concluído e nível 2 aberto');
 
-  // Temporizador (Modo Lenda = 20 s)
-  await page.click('label:has-text("Modo Lenda")');
+  // Modos em pausa temporária (só o Modo Episódios fica activo)
   await page.click('text=Modos');
-  await page.locator('.mode-card', { hasText: 'Desafio Relâmpago' }).locator('button').click();
+  await page.waitForSelector('.mode-grid');
+  const paused = await page.locator('.mode-card.paused').count();
+  ok(paused === 3 || paused === 0, `Modos em pausa: ${paused} (3 durante a pausa, 0 depois)`);
+  if (paused === 3) {
+    ok(await page.locator('.mode-card', { hasText: 'Desafio Relâmpago' }).locator('button').isDisabled(), 'Desafio Relâmpago está inactivo');
+    ok(await page.locator('.mode-card', { hasText: 'Duelo Nerd' }).locator('button').isDisabled(), 'Duelo Nerd está inactivo');
+    ok(!(await page.getByRole('button', { name: 'Abrir mapa' }).isDisabled()), 'Modo Episódios continua activo');
+  }
+
+  // Temporizador (Modo Lenda = 20 s), no Modo Episódios
+  await page.click('label:has-text("Modo Lenda")');
+  await page.click('text=Abrir mapa');
+  await page.locator('.ep-card').first().locator('button').click();
   await page.waitForSelector('.question-text');
   const t0 = Number((await page.locator('.timer-num').textContent()).replace(/\D/g, ''));
   ok(t0 === 20, `Temporizador do Modo Lenda começa em 20 s (lido: ${t0})`);
-  // Abrir "Sair" pausa o tempo; cancelar retoma sem reiniciar.
   await page.waitForTimeout(3000);
   await page.click('text=Sair');
   await page.waitForTimeout(2000);
@@ -113,19 +123,8 @@ async function answerCurrent(page, correct) {
   ok((await page.locator('.hud-value').textContent()) === '0', 'Fim do tempo dá 0 pontos');
   await page.click('text=Sair');
   await page.locator('.modal').getByRole('button', { name: 'Sair', exact: true }).click();
-  await page.waitForSelector('.mode-grid');
-
-  // Duelo
-  await page.locator('.mode-card', { hasText: 'Duelo Nerd' }).locator('button').click();
-  await page.fill('#duel-p1', 'Mauro');
-  await page.fill('#duel-p2', 'Eryxson');
-  await page.click('text=Começar duelo');
-  await page.waitForSelector('text=Vez de Mauro');
-  await page.screenshot({ path: `${OUT}/07-duelo-vez.png` });
-  await page.getByRole('button', { name: 'Estou pronto' }).click();
-  await answerCurrent(page, true);
-  await page.keyboard.press('Enter');
-  ok(await page.locator('text=Vez de Eryxson').isVisible(), 'Duelo passa a vez ao segundo jogador');
+  await page.waitForSelector('.trail');
+  ok(Number(await page.locator('.map-total b').textContent()) > 0, 'Mapa mostra os pontos acumulados');
 
   // Mobile
   const m = await browser.newContext({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 2, isMobile: true, hasTouch: true });
