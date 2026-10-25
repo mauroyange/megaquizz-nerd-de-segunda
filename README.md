@@ -53,7 +53,7 @@ Link fixo para o APK mais recente: https://github.com/mauroyange/megaquizz-nerd-
 
 Para instalar: abrir o link no telemóvel, descarregar, abrir o ficheiro e autorizar "instalar apps desconhecidas" quando o Android pedir. Versões novas instalam-se por cima, sem perder o progresso.
 
-**Assinatura.** Sem configuração, o APK é assinado com a chave de teste `android/app/megaquizz-test.keystore` (incluída de propósito, para que as actualizações se instalem por cima). Para a Google Play é obrigatório usar uma chave privada própria: guarda o ficheiro `.jks` num local seguro e adiciona em *Settings → Secrets and variables → Actions* os segredos `ANDROID_KEYSTORE_BASE64` (o `.jks` em base64) e `ANDROID_KEYSTORE_PASSWORD` (opcionais: `ANDROID_KEY_ALIAS`, por omissão `megaquizz`, e `ANDROID_KEY_PASSWORD`, por omissão igual à anterior). A partir daí o workflow usa essa chave. Nota: a mudança de chave obriga a desinstalar uma vez a versão de teste.
+**Assinatura.** O APK e o AAB são assinados com a chave definitiva, guardada nos segredos do repositório `ANDROID_KEYSTORE_BASE64` (o `.jks` em base64) e `ANDROID_KEYSTORE_PASSWORD`. Guarda uma cópia do `.jks` e da password fora do GitHub: sem eles não é possível publicar actualizações na Google Play.
 
 Compilar localmente (precisa de Android Studio / Android SDK e Java 21):
 

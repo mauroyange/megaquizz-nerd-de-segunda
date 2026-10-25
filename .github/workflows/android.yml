@@ -46,7 +46,7 @@ jobs:
       - run: npm run build
       - run: npx cap sync android
 
-      # Se existirem os segredos da chave definitiva, usa-os; senão fica a chave de teste.
+      # Prepara a chave definitiva a partir dos segredos do repositório.
       - name: Preparar chave de assinatura
         env:
           KEYSTORE_B64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
@@ -56,7 +56,8 @@ jobs:
             echo "ANDROID_KEYSTORE_PATH=$RUNNER_TEMP/release.jks" >> "$GITHUB_ENV"
             echo "Assinatura: chave definitiva"
           else
-            echo "Assinatura: chave de teste"
+            echo "::error::Falta o segredo ANDROID_KEYSTORE_BASE64 (chave de assinatura)."
+            exit 1
           fi
 
       - name: Compilar APK e AAB

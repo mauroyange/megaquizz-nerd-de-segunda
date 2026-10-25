@@ -19,26 +19,20 @@ android {
     }
     signingConfigs {
         release {
-            // Chave definitiva: vem dos segredos do GitHub (ANDROID_KEYSTORE_BASE64, etc.).
-            // Sem esses segredos, usa a chave de teste incluída no repositório, para que
-            // cada APK novo se instale por cima do anterior. Não usar a chave de teste na Play Store.
+            // Chave definitiva, vinda dos segredos do GitHub (ANDROID_KEYSTORE_BASE64 e
+            // ANDROID_KEYSTORE_PASSWORD). Sem ela, o APK de release não é assinado.
             def ksPath = System.getenv("ANDROID_KEYSTORE_PATH")
             if (ksPath) {
                 storeFile = file(ksPath)
                 storePassword = System.getenv("ANDROID_KEYSTORE_PASSWORD") ?: ""
-                keyAlias = System.getenv("ANDROID_KEY_ALIAS") ?: ""
-                keyPassword = System.getenv("ANDROID_KEY_PASSWORD") ?: ""
-            } else {
-                storeFile = file("megaquizz-test.keystore")
-                storePassword = "megaquizz-teste"
-                keyAlias = "megaquizz-test"
-                keyPassword = "megaquizz-teste"
+                keyAlias = System.getenv("ANDROID_KEY_ALIAS") ?: "megaquizz"
+                keyPassword = System.getenv("ANDROID_KEY_PASSWORD") ?: storePassword
             }
         }
     }
     buildTypes {
         release {
-            signingConfig signingConfigs.release
+            if (System.getenv("ANDROID_KEYSTORE_PATH")) signingConfig signingConfigs.release
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
