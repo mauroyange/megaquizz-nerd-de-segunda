@@ -30,3 +30,7 @@ export function registerServiceWorker() {
     });
   });
 }
+
+/** Endereço público do jogo (usado nas partilhas). */
+export const GAME_URL = 'https://mauroyange.github.io/megaquizz-nerd-de-segunda/';
+export const GAME_URL_SHORT = 'mauroyange.github.io/megaquizz-nerd-de-segunda';

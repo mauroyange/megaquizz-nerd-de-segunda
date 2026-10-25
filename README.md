@@ -28,6 +28,14 @@ Cada push para `main` publica o jogo automaticamente no **GitHub Pages** (`.gith
 
 A pasta `dist/` também pode ser alojada em qualquer servidor estático (Netlify, Vercel, GitHub Pages, cPanel…).
 
+## Partilha do resultado
+
+No ecrã de resultados, o jogador escreve o nome (fica guardado no dispositivo) e carrega em **Partilhar resultado**. O jogo gera uma imagem vertical 1080×1920 (`src/share/storyImage.ts`) com o logótipo, a pontuação, as estatísticas, as conquistas e o link do jogo.
+
+- **Telemóvel (navegador):** abre o menu de partilha do sistema (Instagram Stories, WhatsApp, Facebook…). Se o navegador não suportar partilha de ficheiros, descarrega o PNG.
+- **App Android:** usa o menu de partilha nativo (`@capacitor/share` + `@capacitor/filesystem`).
+- **Computador:** botão **Descarregar imagem**.
+
 ## App instalável
 
 ### PWA (instalar a partir do site)
@@ -71,6 +79,7 @@ cd android && ./gradlew assembleRelease   # APK em android/app/build/outputs/apk
 | 12 conquistas, recordes, perfil, estatísticas | Completo |
 | Progresso guardado no navegador (localStorage), reiniciar com confirmação | Completo |
 | Revisão das respostas no fim de cada partida | Completo |
+| Nome do jogador e partilha do resultado (imagem 1080×1920 para stories) | Completo |
 | Efeitos sonoros 8-bit (desligáveis) | Completo |
 | Teclado (1–4 / A–D, Enter), foco visível, `prefers-reduced-motion` | Completo |
 | Responsivo: telemóvel, tablet e computador | Completo |

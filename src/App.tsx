@@ -127,7 +127,7 @@ export default function App() {
       );
       break;
     case 'results':
-      page = <ResultsPage data={screen.data} progress={progress} go={go} play={play} />;
+      page = <ResultsPage data={screen.data} progress={progress} go={go} play={play} update={update} />;
       break;
   }
 

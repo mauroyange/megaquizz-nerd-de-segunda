@@ -1,4 +1,7 @@
+import { useState } from 'react';
 import type { ProgressState } from '../types';
+import { ShareDialog } from '../components/ShareDialog';
+import type { StoryData } from '../share/storyImage';
 import type { PlayConfig, ResultData, Screen } from '../App';
 import { getEpisode, EPISODES } from '../data/episodes';
 import { isUnlocked } from '../game/progress';
@@ -11,6 +14,7 @@ interface Props {
   progress: ProgressState;
   go: (s: Screen) => void;
   play: (c: PlayConfig) => void;
+  update: (fn: (p: ProgressState) => ProgressState) => void;
 }
 
 export function formatTime(ms: number) {
@@ -19,7 +23,11 @@ export function formatTime(ms: number) {
   return m ? `${m}m ${String(s % 60).padStart(2, '0')}s` : `${s}s`;
 }
 
-export function ResultsPage({ data, progress, go, play }: Props) {
+export function ResultsPage({ data, progress, go, play, update }: Props) {
+  const [sharing, setSharing] = useState(false);
+  const playerName = progress.settings.playerName;
+  const setPlayerName = (name: string) =>
+    update((p) => ({ ...p, settings: { ...p.settings, playerName: name.slice(0, 20) } }));
   const { summary, config, session, unlocked, newRecord, previousBest } = data;
   const episode = config.episodeId ? getEpisode(config.episodeId) : undefined;
   const nextEp = episode ? EPISODES.find((e) => e.id === episode.id + 1) : undefined;
@@ -38,6 +46,36 @@ export function ResultsPage({ data, progress, go, play }: Props) {
   } else {
     verdict = 'Desafio terminado!';
   }
+
+  const contextLine = `${episode ? `Ep. #${episode.episodeNumber} · ${episode.title}` : MODE_LABEL[config.mode]} · ${DIFFICULTY_LABEL[summary.difficulty]}`;
+  const story: StoryData = {
+    playerName: playerName.trim() || 'Nerd anónimo',
+    context: contextLine,
+    verdict,
+    bigValue: String(isSurvival ? summary.correct : summary.score),
+    bigLabel: isSurvival ? 'Certas seguidas' : 'Pontos',
+    stats: isDuel
+      ? [
+          { label: 'Certas', value: summary.players.map((p) => p.correct).join(' × ') },
+          { label: 'Sequência', value: summary.players.map((p) => p.maxStreak).join(' × ') },
+          { label: 'Perguntas', value: String(summary.total) },
+        ]
+      : [
+          { label: 'Certas', value: `${summary.correct}/${summary.total}` },
+          { label: 'Precisão', value: `${Math.round(summary.accuracy * 100)}%` },
+          { label: 'Sequência', value: String(summary.maxStreak) },
+        ],
+    badges: unlocked.map((a) => a.name),
+    newRecord,
+    duel: isDuel
+      ? summary.players.map((p) => ({ name: p.name, score: p.score, winner: p.score === Math.max(...summary.players.map((x) => x.score)) }))
+      : undefined,
+  };
+  const shareText = isDuel
+    ? `${verdict} Duelo Nerd no MegaQuizz by Nerd de Segunda.`
+    : isSurvival
+      ? `Sobrevivi a ${summary.correct} perguntas seguidas no MegaQuizz by Nerd de Segunda! Tens nível para me bater?`
+      : `Fiz ${summary.score} pontos no MegaQuizz by Nerd de Segunda (${contextLine})! Tens nível para me bater?`;
 
   const backTarget: Screen = config.mode === 'episode' ? { name: 'map', focusId: config.episodeId } : { name: 'modes' };
 
@@ -77,6 +115,26 @@ export function ResultsPage({ data, progress, go, play }: Props) {
         </div>
       )}
 
+      <div className="share-box">
+        {!isDuel && (
+          <label className="name-field" htmlFor="player-name">
+            <span>O teu nome no resultado</span>
+            <input
+              id="player-name"
+              maxLength={20}
+              value={playerName}
+              onChange={(e) => setPlayerName(e.target.value)}
+              placeholder="Escreve o teu nome"
+              autoComplete="nickname"
+            />
+          </label>
+        )}
+        <div className="share-cta">
+          <Button variant="primary" icon="star" onClick={() => setSharing(true)}>Partilhar resultado</Button>
+          <p>Gera uma imagem para os stories ou para enviar a um amigo.</p>
+        </div>
+      </div>
+
       {!isDuel && (
         <dl className="result-stats">
           <div><dt>Certas</dt><dd className="ok">{summary.correct}</dd></div>
@@ -111,6 +169,8 @@ export function ResultsPage({ data, progress, go, play }: Props) {
         )}
         <Button variant="ghost" onClick={() => go(backTarget)}>{config.mode === 'episode' ? 'Voltar ao mapa' : 'Voltar aos modos'}</Button>
       </div>
+
+      <ShareDialog open={sharing} story={story} text={shareText} onClose={() => setSharing(false)} />
 
       <details className="review">
         <summary>Rever respostas ({Object.keys(session.answers).length})</summary>
