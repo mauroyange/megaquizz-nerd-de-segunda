@@ -1,0 +1,22 @@
+{
+  "ok": true,
+  "total": 2,
+  "updatedAt": "2026-10-26T16:55:34.067Z",
+  "entries": [
+    {
+      "rank": 1,
+      "name": "Mauro Yange",
+      "points": 16315,
+      "completed": 10,
+      "me": false
+    },
+    {
+      "rank": 2,
+      "name": "Eryxson Fonseca",
+      "points": 3980,
+      "completed": 2,
+      "me": false
+    }
+  ],
+  "fotografadoEm": "2026-10-26T16:55:32Z"
+}
