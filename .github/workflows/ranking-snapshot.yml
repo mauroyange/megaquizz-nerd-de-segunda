@@ -1,0 +1,56 @@
+# Fotografia do ranking no fecho do passatempo (27/10/2026 às 22h00 de Luanda = 21:00 UTC).
+# O agendamento do GitHub pode atrasar alguns minutos, por isso arranca às 20:30 UTC
+# e espera até à hora exacta antes de ler o ranking. Guarda o resultado em passatempo/.
+name: Fotografia do ranking (fecho do passatempo)
+
+on:
+  schedule:
+    - cron: '30 20 27 10 *'
+  workflow_dispatch:
+    inputs:
+      now:
+        description: Tirar já (ignora a hora de fecho)
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - name: Esperar pelas 22h00 de Luanda
+        if: ${{ !inputs.now }}
+        run: |
+          [ "$(date -u +%Y)" = "2026" ] || { echo "Fora de 2026, nada a fazer."; exit 0; }
+          TARGET=$(date -u -d '2026-10-27T21:00:00Z' +%s)
+          NOW=$(date -u +%s)
+          if [ "$NOW" -lt "$TARGET" ]; then echo "A esperar $((TARGET-NOW)) s"; sleep $((TARGET-NOW)); fi
+      - name: Ler o ranking e guardar
+        run: |
+          URL=$(grep -o "https://script.google.com/macros/s/[A-Za-z0-9_-]*/exec" src/game/config.ts | head -1)
+          STAMP=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+          curl -sS -L --max-time 120 "$URL?limit=200" -o passatempo/ranking-final.json
+          jq -e '.ok == true' passatempo/ranking-final.json > /dev/null
+          jq --arg t "$STAMP" '. + {fotografadoEm: $t}' passatempo/ranking-final.json > tmp.json && mv tmp.json passatempo/ranking-final.json
+          {
+            echo "# Ranking final — Passatempo Kwamikon Nexus"
+            echo
+            echo "Fotografia tirada em **$STAMP** (UTC; 22h00 de Luanda = 21:00 UTC)."
+            echo
+            echo "| # | Nome | Pontos | Episódios concluídos |"
+            echo "|---|---|---|---|"
+            jq -r '.entries[] | "| \(.rank) | \(.name) | \(.points) | \(.completed)/10 |"' passatempo/ranking-final.json
+          } > passatempo/ranking-final.md
+          TOP=$(jq -r '.entries[0:3] | map("#\(.rank) \(.name) — \(.points) pts") | join(" | ")' passatempo/ranking-final.json)
+          echo "::notice title=Ranking final ($STAMP)::${TOP:-sem jogadores}"
+      - name: Guardar no repositório
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add passatempo/
+          git commit -m "Fotografia do ranking no fecho do passatempo [skip ci]" || echo "Sem alterações"
+          git push

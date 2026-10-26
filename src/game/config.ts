@@ -68,3 +68,19 @@ export const ONLINE = {
     (import.meta.env.VITE_RANKING_URL as string | undefined) ??
     'https://script.google.com/macros/s/AKfycbybY1d1c6SlTA5hcFxh3v3kKlIWK0HVuY9PHKiXmSnoG6bi_QbVXlcAT4AfRndqgnDbUA/exec',
 };
+
+/**
+ * Passatempo em curso. Durante o período, só a versão online (site) envia
+ * pontuações; a app Android mostra o ranking apenas para consulta.
+ */
+export const CONTEST = {
+  name: 'Passatempo Kwamikon Nexus',
+  prize: 'Entrada BANDO para 8 pessoas no Kwamikon Nexus',
+  from: '2026-10-26T00:00:00+01:00',
+  until: '2026-10-27T22:00:00+01:00',
+  webOnly: true,
+};
+
+export function contestActive(now = Date.now()): boolean {
+  return now >= Date.parse(CONTEST.from) && now < Date.parse(CONTEST.until);
+}

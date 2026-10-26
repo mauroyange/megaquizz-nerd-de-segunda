@@ -1,6 +1,7 @@
 import type { ProgressState } from '../types';
 import { EPISODES } from './episodes';
-import { ONLINE } from '../game/config';
+import { CONTEST, ONLINE, contestActive } from '../game/config';
+import { isNativeApp } from '../utils/platform';
 import { episodeProgress } from '../game/progress';
 
 export interface RankingEntry {
@@ -31,6 +32,11 @@ export interface SubmitResponse {
 
 export function rankingEnabled(): boolean {
   return !!ONLINE.rankingUrl;
+}
+
+/** Durante um passatempo só para a versão online, a app nativa não envia pontuações. */
+export function submitBlockedHere(now = Date.now(), native = isNativeApp()): boolean {
+  return CONTEST.webOnly && native && contestActive(now);
 }
 
 /** Dados enviados para o ranking: só o nome escolhido, o id anónimo e as pontuações dos episódios. */
@@ -67,6 +73,7 @@ export async function fetchRanking(playerId: string, limit = 100): Promise<Ranki
 
 export async function submitScore(p: ProgressState): Promise<SubmitResponse> {
   if (!rankingEnabled()) throw new Error('O ranking online ainda não está activo.');
+  if (submitBlockedHere()) throw new Error('Durante o passatempo, só a versão online do jogo conta para o ranking.');
   const body = buildSubmission(p);
   if (!body.name) throw new Error('Escreve o teu nome para entrares no ranking.');
   // text/plain evita o pedido prévio de CORS, que o Apps Script não suporta.

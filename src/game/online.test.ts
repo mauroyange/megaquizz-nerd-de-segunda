@@ -64,3 +64,19 @@ describe('pontos acumulados e ranking', () => {
     expect(sanitizeProgress(old).playerId.length).toBeGreaterThanOrEqual(16);
   });
 });
+
+import { contestActive } from './config';
+import { submitBlockedHere } from '../data/leaderboard';
+
+describe('passatempo (só versão online)', () => {
+  it('está activo até 27/10 às 22h00 de Luanda', () => {
+    expect(contestActive(t('2026-10-27T21:59:00+01:00'))).toBe(true);
+    expect(contestActive(t('2026-10-27T22:00:00+01:00'))).toBe(false);
+  });
+  it('a app Android não envia durante o passatempo; o site envia sempre', () => {
+    const during = t('2026-10-27T12:00:00+01:00');
+    expect(submitBlockedHere(during, true)).toBe(true);
+    expect(submitBlockedHere(during, false)).toBe(false);
+    expect(submitBlockedHere(t('2026-10-28T12:00:00+01:00'), true)).toBe(false);
+  });
+});

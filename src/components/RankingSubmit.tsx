@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { ProgressState } from '../types';
-import { rankingEnabled, submitScore } from '../data/leaderboard';
+import { rankingEnabled, submitBlockedHere, submitScore } from '../data/leaderboard';
+import { GAME_URL_SHORT } from '../utils/platform';
 import { totalEpisodePoints } from '../game/progress';
 import { Button } from './ui';
 
@@ -42,7 +43,7 @@ export function RankingSubmit({ progress, auto, onOpenRanking, onSent, inRanking
   }, [progress, total, onSent]);
 
   useEffect(() => {
-    if (auto && nameAtMount.current && !autoDone.current && hasName && rankingEnabled() && total > 0) {
+    if (auto && nameAtMount.current && !autoDone.current && hasName && rankingEnabled() && !submitBlockedHere() && total > 0) {
       autoDone.current = true;
       void send();
     }
@@ -50,6 +51,21 @@ export function RankingSubmit({ progress, auto, onOpenRanking, onSent, inRanking
 
   if (!rankingEnabled()) {
     return <p className="rank-note">O ranking geral online fica activo em breve. Os teus pontos acumulados ficam guardados e entram logo que abrir.</p>;
+  }
+
+  if (submitBlockedHere()) {
+    return (
+      <div className="rank-submit">
+        <p className="rank-note">
+          Durante o passatempo, só conta para o ranking quem joga na versão online: <b>{GAME_URL_SHORT}</b>. Aqui na app podes consultar o ranking.
+        </p>
+        {onOpenRanking && (
+          <div className="rank-actions">
+            <Button variant="ghost" icon="crown" onClick={onOpenRanking}>Ver ranking geral</Button>
+          </div>
+        )}
+      </div>
+    );
   }
 
   return (

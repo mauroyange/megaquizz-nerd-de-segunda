@@ -7,5 +7,7 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'jsdom',
+    // A pasta skill/ guarda modelos para outros projectos; não são testes deste jogo.
+    exclude: ['**/node_modules/**', 'skill/**'],
   },
 });

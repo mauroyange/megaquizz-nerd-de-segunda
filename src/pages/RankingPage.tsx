@@ -4,6 +4,8 @@ import type { Screen } from '../App';
 import { EPISODES } from '../data/episodes';
 import { fetchRanking, rankingEnabled, type RankingResponse } from '../data/leaderboard';
 import { completedCount, totalEpisodePoints } from '../game/progress';
+import { CONTEST, contestActive } from '../game/config';
+import { formatReturn } from '../game/availability';
 import { Button, ScreenHeader } from '../components/ui';
 import { PixelIcon } from '../components/PixelIcon';
 import { RankingSubmit } from '../components/RankingSubmit';
@@ -43,6 +45,15 @@ export function RankingPage({ progress, go, update }: Props) {
       <p className="ranking-lede">
         Soma da melhor pontuação de cada um dos {EPISODES.length} episódios do Modo Episódios. Repetir um episódio só conta se bateres o teu recorde nele.
       </p>
+
+      {contestActive() && (
+        <div className="contest-banner" role="note">
+          <PixelIcon name="trophy" size={28} color="var(--bg)" />
+          <p>
+            <b>{CONTEST.name}:</b> o #1 do ranking às {formatReturn(CONTEST.until)} ganha {CONTEST.prize.charAt(0).toLowerCase() + CONTEST.prize.slice(1)}. Só conta a versão online.
+          </p>
+        </div>
+      )}
 
       <div className="panel ranking-me">
         <div className="ranking-me-stats">
