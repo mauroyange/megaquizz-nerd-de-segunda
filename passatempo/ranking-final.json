@@ -1,23 +1,246 @@
 {
   "ok": true,
-  "total": 2,
-  "updatedAt": "2026-10-26T16:55:34.067Z",
+  "total": 34,
+  "updatedAt": "2026-10-27T21:00:01.595Z",
   "entries": [
     {
       "rank": 1,
-      "name": "Mauro Yange",
-      "points": 16315,
+      "name": "garfield_lunático",
+      "points": 26934,
       "completed": 10,
       "me": false
     },
     {
       "rank": 2,
-      "name": "Eryxson Fonseca",
-      "points": 3980,
+      "name": "Wan D. Ara",
+      "points": 26872,
+      "completed": 10,
+      "me": false
+    },
+    {
+      "rank": 3,
+      "name": "Tirsa_pm",
+      "points": 26841,
+      "completed": 10,
+      "me": false
+    },
+    {
+      "rank": 4,
+      "name": "JustinTellen8",
+      "points": 26780,
+      "completed": 10,
+      "me": false
+    },
+    {
+      "rank": 5,
+      "name": "??? ??? ???",
+      "points": 26721,
+      "completed": 10,
+      "me": false
+    },
+    {
+      "rank": 6,
+      "name": "Henrique Kabila",
+      "points": 26712,
+      "completed": 10,
+      "me": false
+    },
+    {
+      "rank": 7,
+      "name": "Josemar Luamba",
+      "points": 26611,
+      "completed": 10,
+      "me": false
+    },
+    {
+      "rank": 8,
+      "name": "Zeinya",
+      "points": 26569,
+      "completed": 10,
+      "me": false
+    },
+    {
+      "rank": 9,
+      "name": "Pepito01",
+      "points": 26540,
+      "completed": 10,
+      "me": false
+    },
+    {
+      "rank": 10,
+      "name": "Hottie frutti",
+      "points": 26441,
+      "completed": 10,
+      "me": false
+    },
+    {
+      "rank": 11,
+      "name": "King",
+      "points": 26353,
+      "completed": 10,
+      "me": false
+    },
+    {
+      "rank": 12,
+      "name": "Dieje Elisa",
+      "points": 26275,
+      "completed": 10,
+      "me": false
+    },
+    {
+      "rank": 13,
+      "name": "Vani 2.0",
+      "points": 26181,
+      "completed": 10,
+      "me": false
+    },
+    {
+      "rank": 14,
+      "name": "Steve",
+      "points": 26138,
+      "completed": 10,
+      "me": false
+    },
+    {
+      "rank": 15,
+      "name": "TrickladyT",
+      "points": 25911,
+      "completed": 10,
+      "me": false
+    },
+    {
+      "rank": 16,
+      "name": "@Necatcho_m",
+      "points": 21373,
+      "completed": 10,
+      "me": false
+    },
+    {
+      "rank": 17,
+      "name": "Luzmanuel",
+      "points": 20200,
+      "completed": 10,
+      "me": false
+    },
+    {
+      "rank": 18,
+      "name": "Txotxene",
+      "points": 20040,
+      "completed": 9,
+      "me": false
+    },
+    {
+      "rank": 19,
+      "name": "Nelson_",
+      "points": 19318,
+      "completed": 10,
+      "me": false
+    },
+    {
+      "rank": 20,
+      "name": "Helkar",
+      "points": 18952,
+      "completed": 10,
+      "me": false
+    },
+    {
+      "rank": 21,
+      "name": "ZENKYŌ 👺",
+      "points": 17478,
+      "completed": 10,
+      "me": false
+    },
+    {
+      "rank": 22,
+      "name": "Inazuma",
+      "points": 17134,
+      "completed": 10,
+      "me": false
+    },
+    {
+      "rank": 23,
+      "name": "ObsidianFury",
+      "points": 16578,
+      "completed": 10,
+      "me": false
+    },
+    {
+      "rank": 24,
+      "name": "Wonder",
+      "points": 14647,
+      "completed": 10,
+      "me": false
+    },
+    {
+      "rank": 25,
+      "name": "i.m_just_kenny",
+      "points": 13376,
+      "completed": 5,
+      "me": false
+    },
+    {
+      "rank": 26,
+      "name": "Txotxene",
+      "points": 8536,
+      "completed": 4,
+      "me": false
+    },
+    {
+      "rank": 27,
+      "name": "Wild",
+      "points": 7094,
+      "completed": 4,
+      "me": false
+    },
+    {
+      "rank": 28,
+      "name": "Jagsantos",
+      "points": 3869,
       "completed": 2,
+      "me": false
+    },
+    {
+      "rank": 29,
+      "name": "Um_tal_de_Quê",
+      "points": 2962,
+      "completed": 1,
+      "me": false
+    },
+    {
+      "rank": 30,
+      "name": "i.m_just_kenny",
+      "points": 2150,
+      "completed": 1,
+      "me": false
+    },
+    {
+      "rank": 31,
+      "name": "Geek Shop",
+      "points": 1949,
+      "completed": 1,
+      "me": false
+    },
+    {
+      "rank": 32,
+      "name": "GBI",
+      "points": 1671,
+      "completed": 1,
+      "me": false
+    },
+    {
+      "rank": 33,
+      "name": "Rose",
+      "points": 1513,
+      "completed": 1,
+      "me": false
+    },
+    {
+      "rank": 34,
+      "name": "Archer",
+      "points": 1157,
+      "completed": 1,
       "me": false
     }
   ],
-  "fotografadoEm": "2026-10-26T16:55:32Z",
-  "teste": "Fotografia de teste. A oficial é tirada às 22h00 de 27/10/2026 (Luanda)."
+  "fotografadoEm": "2026-10-27T21:00:00Z"
 }
