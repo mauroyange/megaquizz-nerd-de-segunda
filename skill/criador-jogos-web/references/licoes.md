@@ -20,6 +20,10 @@ Lê antes de começar — cada ponto custou uma iteração.
 - `const URL = ...` num script Node esconde a classe `URL`. Usa outro nome.
 - Responder sempre "a primeira opção" pode dar 0 pontos (as opções são baralhadas) — usa o mapa pergunta→resposta certa construído com `esbuild` a partir do banco.
 
+- O `esbuild` dos testes que lê o banco de perguntas precisa de `define: { 'import.meta.env': '{}' }` quando o código usa `import.meta.env`.
+- Ao testar "ficheiro em falta" com `page.route(...abort)`, o service worker pode servir o ficheiro da cache: usa um contexto novo com `serviceWorkers: 'block'`.
+- Código só para testes (`if (import.meta.env.VITE_X)`) é removido da build publicada; confirma com `grep` no `dist/`.
+
 ## Limitações do ambiente da sessão
 
 - **Sem acesso** a Instagram, `*.github.io`, `script.google.com`, cdnjs, `dl.google.com`. Verifica pelo GitHub Actions (que alcança tudo) e lê os resultados como anotações.

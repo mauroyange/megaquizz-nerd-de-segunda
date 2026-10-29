@@ -7,7 +7,7 @@ let pw;
 try { pw = require('playwright'); } catch { pw = require(path.join(execSync('npm root -g').toString().trim(), 'playwright')); }
 const APP_URL = process.env.URL || 'http://localhost:4175/';
 const esbuild = require('esbuild');
-const bundled = esbuild.buildSync({ entryPoints: [path.join(__dirname, '..', 'src/data/questions/index.ts')], bundle: true, format: 'cjs', write: false, platform: 'node' });
+const bundled = esbuild.buildSync({ entryPoints: [path.join(__dirname, '..', 'src/data/questions/index.ts')], bundle: true, format: 'cjs', write: false, platform: 'node', define: { 'import.meta.env': '{}' } });
 const mod = { exports: {} };
 new Function('module', 'exports', 'require', bundled.outputFiles[0].text)(mod, mod.exports, require);
 const ANSWERS = new Map(mod.exports.QUESTION_BANK.map((q) => [q.question, q.options['abcd'.indexOf(q.correctOptionId)]]));

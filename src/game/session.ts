@@ -1,6 +1,6 @@
 import { OPTION_IDS, type AnswerRecord, type Difficulty, type GameMode, type OptionId, type PlayerState, type Question, type SessionState, type SessionSummary } from '../types';
 import { RULES, SCORING } from './config';
-import { answerPoints, streakBonusFor } from './scoring';
+import { answerPoints, streakBonusFor, timerForQuestion } from './scoring';
 import { shuffle, type Rng } from '../utils/random';
 
 export interface CreateSessionInput {
@@ -59,8 +59,9 @@ function registerAnswer(s: SessionState, selected: OptionId | null, timeMs: numb
   if (!q || s.phase !== 'question' || s.answers[q.id]) return s;
 
   const correct = selected !== null && selected === q.correctOptionId;
-  const clampedTime = Math.max(0, Math.min(timeMs, s.timerSeconds * 1000));
-  const points = answerPoints(correct, clampedTime, s.timerSeconds, s.difficulty);
+  const timer = timerForQuestion(s.timerSeconds, q);
+  const clampedTime = Math.max(0, Math.min(timeMs, timer * 1000));
+  const points = answerPoints(correct, clampedTime, timer, s.difficulty);
 
   const players = s.players.map((p) => ({ ...p }));
   const player = players[s.currentPlayer];
@@ -75,7 +76,7 @@ function registerAnswer(s: SessionState, selected: OptionId | null, timeMs: numb
     questionId: q.id,
     selected,
     correct,
-    timeMs: selected === null ? s.timerSeconds * 1000 : clampedTime,
+    timeMs: selected === null ? timer * 1000 : clampedTime,
     points,
     streakBonus: bonus,
     player: s.currentPlayer,
@@ -115,7 +116,7 @@ export function sessionReducer(s: SessionState, action: SessionAction): SessionS
     case 'answer':
       return registerAnswer(s, action.optionId, action.timeMs);
     case 'timeout':
-      return registerAnswer(s, null, s.timerSeconds * 1000);
+      return registerAnswer(s, null, timerForQuestion(s.timerSeconds, currentQuestion(s)) * 1000);
     case 'next':
       return advance(s, action.now ?? Date.now());
   }

@@ -5,6 +5,21 @@ export type Difficulty = 'casual' | 'nerd' | 'lenda';
 export type OptionId = 'a' | 'b' | 'c' | 'd';
 export const OPTION_IDS: readonly OptionId[] = ['a', 'b', 'c', 'd'];
 
+/** Imagem ou excerto de áudio associado a uma pergunta. Caminhos relativos a public/. */
+export interface QuestionMedia {
+  kind: 'image' | 'audio';
+  /** Ex.: "media/img/nds-topnerdboard-silhueta.webp" ou "media/audio/ep04-tema.mp3". */
+  src: string;
+  /** Descrição acessível; não deve revelar a resposta. */
+  alt: string;
+  /** Imagem mostrada depois de responder (ex.: o original de uma silhueta). */
+  reveal?: string;
+  /** Crédito/fonte do material, mostrado depois de responder. */
+  credit?: string;
+  /** Áudio: duração do excerto em segundos (máximo RULES.maxClipSeconds). */
+  clipSeconds?: number;
+}
+
 export interface Question {
   /** Identificador único, ex.: "ep10_q001". */
   id: string;
@@ -21,6 +36,10 @@ export interface Question {
   source: string | null;
   /** true para conteúdo de demonstração ainda não verificado. */
   demo?: boolean;
+  /** Pergunta com imagem (silhueta, personagem…) ou com som (excerto de música). */
+  media?: QuestionMedia;
+  /** Alternativas em imagem (pela ordem a, b, c, d); o texto de options serve de legenda e de alt. */
+  optionImages?: [string, string, string, string];
 }
 
 export type IconName =

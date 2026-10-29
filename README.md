@@ -28,6 +28,40 @@ Cada push para `main` publica o jogo automaticamente no **GitHub Pages** (`.gith
 
 A pasta `dist/` também pode ser alojada em qualquer servidor estático (Netlify, Vercel, GitHub Pages, cPanel…).
 
+## Perguntas com imagem e som
+
+Tipos suportados (campo `media` e `optionImages` em `src/types/index.ts`):
+
+| Tipo | Exemplo | Como se escreve |
+|---|---|---|
+| **Silhueta** | "De que personagem é esta silhueta?" | `media: { kind: 'image', src: '…-silhueta.webp', reveal: '….webp', alt, credit }` — depois de responder mostra o original |
+| **Imagem** | "Qual é o nome desta personagem?" | `media: { kind: 'image', src, alt, credit }` |
+| **Alternativas em imagem** | "Qual destes objectos pertence a X?" | `optionImages: [a, b, c, d]` (o texto de `options` é a legenda) |
+| **Som** | "De que filme/anime é esta música?" | `media: { kind: 'audio', src: '….mp3', clipSeconds, alt, credit }` — tem +10 s de tempo, toca sozinho, botão e tecla **P** para repetir |
+
+Exemplos reais em `src/data/questions/media.ts` (usam só os ícones oficiais do programa).
+
+**Preparar os ficheiros** (requer ImageMagick e ffmpeg):
+
+```bash
+# Imagem com fundo transparente → public/media/img/<nome>.webp (+ <nome>-silhueta.webp)
+node scripts/prepare-media.mjs imagem original.png ep01-miles --silhueta [--pixel] [--tamanho 360]
+
+# Excerto de áudio → public/media/audio/<nome>.mp3 (mono, 64 kbps, fade, volume normalizado)
+node scripts/prepare-media.mjs audio musica.mp3 ep04-tema-gaga --inicio 42.5 --duracao 8
+```
+
+A ferramenta **nunca** gera excertos com mais de 10 s e regista cada ficheiro em `public/media/manifest.json`. `npm test` falha se uma pergunta apontar para um ficheiro inexistente, se um áudio passar do limite ou não tiver crédito, ou se uma imagem passar de 150 KB. No jogo, a multimédia é carregada antes de começar; se um ficheiro falhar, essa pergunta é trocada por uma de texto. Para silhuetas, a imagem original precisa de fundo transparente.
+
+Teste no navegador: `scripts/e2e-media.cjs` (instruções no topo do ficheiro).
+
+### Direitos de autor (ler antes de adicionar material)
+
+- **Não existe uma duração "segura"** (a ideia dos "30 segundos" é um mito). Um excerto curto reduz o risco, mas não o elimina: usar música ou imagens oficiais de terceiros num jogo público de uma marca é uma utilização que, em princípio, precisa de autorização.
+- **Imagens**: preferir ilustrações próprias (ex.: fan art desenhada pela equipa, silhuetas redesenhadas), material de imprensa/kits oficiais cujos termos permitam este uso, ou imagens com licença aberta. Indicar sempre o crédito.
+- **Som**: preferir material autorizado — pedir à editora/distribuidora ou à entidade de gestão de direitos (em Angola, a SADIA), usar música de fãs com autorização do autor (ex.: artistas angolanos do TOP NerdBoard), ou excertos que a própria marca já tenha licenciado para uso digital. A licença de emissão da rádio normalmente **não** cobre a distribuição em site/app.
+- Os ficheiros em `public/media/` ficam públicos no GitHub e no site. Se um titular de direitos pedir, retirar o ficheiro e a pergunta (a troca automática evita erros no jogo).
+
 ## Ranking geral online (Modo Episódios)
 
 - **Pontos acumulados** = soma da melhor pontuação de cada episódio (repetir só conta se bater o recorde desse episódio). Aparecem no mapa, no ecrã inicial, nos resultados e no ecrã **Ranking geral**.
@@ -96,6 +130,7 @@ cd android && ./gradlew assembleRelease   # APK em android/app/build/outputs/apk
 | Teclado (1–4 / A–D, Enter), foco visível, `prefers-reduced-motion` | Completo |
 | Responsivo: telemóvel, tablet e computador | Completo |
 | PWA instalável e jogável offline | Completo |
+| Perguntas com imagem (silhuetas, alternativas em imagem) e com som | Completo (conteúdo de demonstração com ícones oficiais) |
 | App Android (APK/AAB) gerada automaticamente | Completo |
 | Publicação na Google Play | Pendente (exige conta de programador e chave própria) |
 

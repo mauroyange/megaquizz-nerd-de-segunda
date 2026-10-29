@@ -80,3 +80,53 @@ describe('passatempo (só versão online)', () => {
     expect(submitBlockedHere(t('2026-10-28T12:00:00+01:00'), true)).toBe(false);
   });
 });
+
+import { timerForQuestion } from './scoring';
+import { createSession, sessionReducer } from './session';
+import { validateQuestion } from './validation';
+
+describe('perguntas com som', () => {
+  const audioQ = {
+    id: 'ep01_q099', episodeId: 1, category: 'Teste', difficulty: 'casual' as const, question: 'Som?',
+    options: ['A', 'B', 'C', 'D'] as [string, string, string, string], correctOptionId: 'a' as const, explanation: 'x', source: null,
+    media: { kind: 'audio' as const, src: 'media/audio/x.mp3', alt: 'Excerto', clipSeconds: 8, credit: 'Fonte' },
+  };
+  it('dão 10 segundos extra', () => {
+    expect(timerForQuestion(25, audioQ)).toBe(35);
+    expect(timerForQuestion(25, { media: undefined })).toBe(25);
+  });
+  it('o fim do tempo conta o tempo total da pergunta com som', () => {
+    let s = createSession({ mode: 'episode', questions: [audioQ], difficulty: 'casual', timerSeconds: 25, now: 0 });
+    s = sessionReducer(s, { type: 'timeout' });
+    expect(s.answers[audioQ.id].timeMs).toBe(35000);
+  });
+  it('rejeita excertos longos, sem crédito ou com endereços externos', () => {
+    expect(validateQuestion({ ...audioQ, media: { ...audioQ.media, clipSeconds: 30 } })).toContain('excerto de áudio com mais de 10s');
+    expect(validateQuestion({ ...audioQ, media: { ...audioQ.media, credit: '' } })).toContain('áudio sem crédito/fonte');
+    expect(validateQuestion({ ...audioQ, media: { ...audioQ.media, src: 'https://x.com/a.mp3' } })).toContain('media.src deve ser um caminho relativo a public/');
+    expect(validateQuestion(audioQ)).toEqual([]);
+  });
+});
+
+import { ensureMediaLoads } from './mediaPreload';
+import type { Question } from '../types';
+
+describe('pré-carregamento de imagens e sons', () => {
+  const mk = (id: string, extra: Partial<Question> = {}): Question => ({
+    id, episodeId: 1, category: 'T', difficulty: 'casual', question: id, options: ['a1', 'b1', 'c1', 'd1'],
+    correctOptionId: 'a', explanation: 'x', source: null, ...extra,
+  });
+  const img = mk('m1', { media: { kind: 'image', src: 'media/img/x.webp', alt: 'x' } });
+  const txt = [mk('t1'), mk('t2'), mk('t3', { difficulty: 'nerd' })];
+
+  it('mantém as perguntas quando a multimédia carrega', async () => {
+    const r = await ensureMediaLoads([img, txt[0]], [img, ...txt], async () => true);
+    expect(r.questions.map((q) => q.id)).toEqual(['m1', 't1']);
+    expect(r.dropped).toEqual([]);
+  });
+  it('troca por uma pergunta de texto da mesma dificuldade, sem repetir, quando falha', async () => {
+    const r = await ensureMediaLoads([img, txt[0]], [img, ...txt], async () => false);
+    expect(r.dropped).toEqual(['m1']);
+    expect(r.questions.map((q) => q.id)).toEqual(['t2', 't1']);
+  });
+});

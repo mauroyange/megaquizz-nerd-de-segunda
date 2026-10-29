@@ -1,4 +1,4 @@
-import type { Difficulty } from '../types';
+import type { Difficulty, Question } from '../types';
 import { RULES, SCORING } from './config';
 
 /** Bónus de rapidez: proporcional ao tempo que sobrou (0 a maxSpeedBonus). */
@@ -25,4 +25,9 @@ export function streakBonusFor(streak: number): number {
 export function effectiveTimer(baseSeconds: number, difficulty: Difficulty): number {
   const t = baseSeconds + RULES.timerOffset[difficulty];
   return Math.max(RULES.timerMin, Math.min(RULES.timerMax, t));
+}
+
+/** Tempo de uma pergunta concreta: as perguntas com som têm segundos extra. */
+export function timerForQuestion(sessionTimer: number, q: Pick<Question, 'media'> | undefined): number {
+  return sessionTimer + (q?.media?.kind === 'audio' ? RULES.audioExtraSeconds : 0);
 }

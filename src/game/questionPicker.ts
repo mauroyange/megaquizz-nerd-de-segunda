@@ -66,6 +66,12 @@ export function pickQuestionsForMode(
   const count = RULES.questionsPerSession[mode];
   switch (mode) {
     case 'episode':
+      // Só em testes automáticos (VITE_TEST_MEDIA_FIRST=1): perguntas com multimédia primeiro.
+      if (import.meta.env.VITE_TEST_MEDIA_FIRST) {
+        const media = pool.filter((q) => q.media || q.optionImages);
+        const rest = pickEpisodeQuestions(pool.filter((q) => !media.includes(q)), difficulty, count - media.length, rng);
+        return [...media, ...rest];
+      }
       return pickEpisodeQuestions(pool, difficulty, count, rng);
     case 'sobrevivencia':
       return pickSurvivalQuestions(pool, rng);

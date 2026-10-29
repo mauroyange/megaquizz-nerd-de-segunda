@@ -36,6 +36,12 @@ export const RULES = {
     nerd: { casual: 3, nerd: 4, lenda: 3 },
     lenda: { casual: 0, nerd: 4, lenda: 6 },
   } as Record<Difficulty, Record<Difficulty, number>>,
+  /** Segundos extra nas perguntas com som (para ouvir o excerto). */
+  audioExtraSeconds: 10,
+  /** Duração máxima de um excerto de áudio, em segundos. */
+  maxClipSeconds: 10,
+  /** Tempo máximo para pré-carregar a multimédia de uma pergunta antes de a trocar por outra. */
+  mediaLoadTimeoutMs: 8000,
   /** Conquista Speedrunner: tempo médio por resposta abaixo deste valor (ms). */
   speedrunAvgMs: 6000,
 };

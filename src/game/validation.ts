@@ -1,4 +1,5 @@
 import { OPTION_IDS, type Question } from '../types';
+import { RULES } from './config';
 
 export interface ValidationIssue {
   questionId: string;
@@ -25,6 +26,22 @@ export function validateQuestion(q: Question): string[] {
     if (normalised.size !== 4) problems.push('opções repetidas');
   }
   if (!OPTION_IDS.includes(q.correctOptionId)) problems.push('correctOptionId inválido');
+  if (q.media) {
+    const m = q.media;
+    if (m.kind !== 'image' && m.kind !== 'audio') problems.push('media.kind inválido');
+    if (!m.src?.trim() || /^https?:|^\//.test(m.src)) problems.push('media.src deve ser um caminho relativo a public/');
+    if (!m.alt?.trim()) problems.push('media sem descrição (alt)');
+    if (m.kind === 'audio') {
+      if (!m.clipSeconds || m.clipSeconds <= 0) problems.push('áudio sem clipSeconds');
+      else if (m.clipSeconds > RULES.maxClipSeconds) problems.push(`excerto de áudio com mais de ${RULES.maxClipSeconds}s`);
+      if (!m.credit?.trim()) problems.push('áudio sem crédito/fonte');
+    }
+  }
+  if (q.optionImages) {
+    if (!Array.isArray(q.optionImages) || q.optionImages.length !== 4 || q.optionImages.some((p) => !p?.trim())) {
+      problems.push('optionImages precisa de 4 imagens');
+    }
+  }
   return problems;
 }
 

@@ -5,7 +5,9 @@ import { localRepository } from '../data/repository';
 import { getEpisode } from '../data/episodes';
 import { pickQuestionsForMode } from '../game/questionPicker';
 import { createSession, currentQuestion, sessionReducer, type SessionAction } from '../game/session';
-import { effectiveTimer } from '../game/scoring';
+import { effectiveTimer, timerForQuestion } from '../game/scoring';
+import { ensureMediaLoads, mediaUrl } from '../game/mediaPreload';
+import { QuestionMedia } from '../components/QuestionMedia';
 import { DIFFICULTY_LABEL, MODE_LABEL, RULES } from '../game/config';
 import { useCountdown } from '../hooks/useCountdown';
 import { Button, ConfirmDialog } from '../components/ui';
@@ -51,7 +53,11 @@ export function QuizPage({ config, difficulty, onFinish, onQuit }: Props) {
           : await localRepository.getAll();
         if (cancelled) return;
         if (res.issues.length) console.warn('Perguntas ignoradas por falharem a validação:', res.issues);
-        const questions = pickQuestionsForMode(config.mode, res.questions, difficulty);
+        const picked = pickQuestionsForMode(config.mode, res.questions, difficulty);
+        // Carrega imagens e sons antes de começar; o que falhar é trocado por perguntas de texto.
+        const { questions, dropped } = await ensureMediaLoads(picked, res.questions);
+        if (cancelled) return;
+        if (dropped.length) console.warn('Perguntas com multimédia trocadas por falha de carregamento:', dropped);
         const minimum = config.mode === 'sobrevivencia' ? 1 : Math.min(RULES.questionsPerSession[config.mode], 4);
         if (questions.length < minimum) {
           setLoad({ status: 'empty', message: 'Ainda não há perguntas suficientes para este modo. Volta mais tarde.' });
@@ -84,8 +90,10 @@ export function QuizPage({ config, difficulty, onFinish, onQuit }: Props) {
   const q = session ? currentQuestion(session) : undefined;
   const phase = session?.phase;
   const running = load.status === 'ready' && phase === 'question' && !awaitingTurn && !confirmQuit;
+  // As perguntas com som têm tempo extra para ouvir o excerto.
+  const qTimer = timerForQuestion(timerSeconds, q);
 
-  const { remaining, elapsed } = useCountdown(timerSeconds * 1000, running, `${q?.id ?? 'none'}-${awaitingTurn}`, () => {
+  const { remaining, elapsed } = useCountdown(qTimer * 1000, running, `${q?.id ?? 'none'}-${awaitingTurn}`, () => {
     sfx.wrong();
     setLastGain(null);
     dispatch({ type: 'timeout' });
@@ -175,7 +183,7 @@ export function QuizPage({ config, difficulty, onFinish, onQuit }: Props) {
   const isSurvival = session.mode === 'sobrevivencia';
   const total = session.questions.length;
   const secondsLeft = Math.ceil(remaining / 1000);
-  const ratio = remaining / (timerSeconds * 1000);
+  const ratio = remaining / (qTimer * 1000);
   const urgent = phase === 'question' && secondsLeft <= 5;
   const heading = episode ? `Ep. #${episode.episodeNumber} · ${episode.title}` : MODE_LABEL[session.mode];
 
@@ -241,7 +249,9 @@ export function QuizPage({ config, difficulty, onFinish, onQuit }: Props) {
         <h2 className="question-text">{q.question}</h2>
       </div>
 
-      <div className="answers" role="group" aria-label="Alternativas">
+      {q.media && <QuestionMedia key={q.id} media={q.media} answered={!!record} active={running} />}
+
+      <div className={`answers ${q.optionImages ? 'with-images' : ''}`} role="group" aria-label="Alternativas">
         {order.map((optId, slot) => {
           const text = q.options[['a', 'b', 'c', 'd'].indexOf(optId)];
           const isCorrect = optId === q.correctOptionId;
@@ -258,6 +268,9 @@ export function QuizPage({ config, difficulty, onFinish, onQuit }: Props) {
               aria-label={`${SLOT_LABEL[slot]}: ${text}${record ? (isCorrect ? ' (resposta correcta)' : isPicked ? ' (a tua resposta)' : '') : ''}`}
             >
               <span className={`answer-key tone-${SLOT_TONE[slot]}`}>{SLOT_LABEL[slot]}</span>
+              {q.optionImages && (
+                <img className="answer-img" src={mediaUrl(q.optionImages[['a', 'b', 'c', 'd'].indexOf(optId)])} alt="" width={96} height={96} />
+              )}
               <span className="answer-text">{text}</span>
               {record && isCorrect && <PixelIcon name="check" size={20} color="var(--teal)" className="answer-mark" />}
             </button>
@@ -280,6 +293,7 @@ export function QuizPage({ config, difficulty, onFinish, onQuit }: Props) {
           </div>
           <p>{q.explanation}</p>
           {q.source && <p className="source">Fonte: {q.source}</p>}
+          {q.media?.credit && q.media.credit !== q.source && <p className="source">{q.media.kind === 'audio' ? 'Excerto' : 'Imagem'}: {q.media.credit}</p>}
           <Button ref={nextBtnRef} variant="primary" onClick={goNext}>
             {session.phase === 'feedback' && (session.eliminated || session.index >= total - 1) ? 'Ver resultados' : 'Seguinte'}
           </Button>

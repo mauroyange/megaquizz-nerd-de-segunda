@@ -1,0 +1,121 @@
+{
+  "files": {
+    "media/img/nds-conselho.webp": {
+      "kind": "image",
+      "bytes": 2470
+    },
+    "media/img/nds-conselho-silhueta.webp": {
+      "kind": "image",
+      "silhouetteOf": "media/img/nds-conselho.webp",
+      "bytes": 364
+    },
+    "media/img/nds-explica.webp": {
+      "kind": "image",
+      "bytes": 5570
+    },
+    "media/img/nds-explica-silhueta.webp": {
+      "kind": "image",
+      "silhouetteOf": "media/img/nds-explica.webp",
+      "bytes": 340
+    },
+    "media/img/nds-morreu.webp": {
+      "kind": "image",
+      "bytes": 3336
+    },
+    "media/img/nds-morreu-silhueta.webp": {
+      "kind": "image",
+      "silhouetteOf": "media/img/nds-morreu.webp",
+      "bytes": 432
+    },
+    "media/img/nds-nobuffer.webp": {
+      "kind": "image",
+      "bytes": 3282
+    },
+    "media/img/nds-nobuffer-silhueta.webp": {
+      "kind": "image",
+      "silhouetteOf": "media/img/nds-nobuffer.webp",
+      "bytes": 444
+    },
+    "media/img/nds-topnerdboard.webp": {
+      "kind": "image",
+      "bytes": 4344
+    },
+    "media/img/nds-topnerdboard-silhueta.webp": {
+      "kind": "image",
+      "silhouetteOf": "media/img/nds-topnerdboard.webp",
+      "bytes": 486
+    },
+    "media/img/nds-ranking.webp": {
+      "kind": "image",
+      "bytes": 6550
+    },
+    "media/img/nds-ranking-silhueta.webp": {
+      "kind": "image",
+      "silhouetteOf": "media/img/nds-ranking.webp",
+      "bytes": 478
+    },
+    "media/img/nds-tema.webp": {
+      "kind": "image",
+      "bytes": 3898
+    },
+    "media/img/nds-tema-silhueta.webp": {
+      "kind": "image",
+      "silhouetteOf": "media/img/nds-tema.webp",
+      "bytes": 482
+    },
+    "media/img/nds-savepoint.webp": {
+      "kind": "image",
+      "bytes": 2922
+    },
+    "media/img/nds-savepoint-silhueta.webp": {
+      "kind": "image",
+      "silhouetteOf": "media/img/nds-savepoint.webp",
+      "bytes": 326
+    },
+    "media/img/nds-canon.webp": {
+      "kind": "image",
+      "bytes": 4354
+    },
+    "media/img/nds-canon-silhueta.webp": {
+      "kind": "image",
+      "silhouetteOf": "media/img/nds-canon.webp",
+      "bytes": 386
+    },
+    "media/img/nds-culturapop.webp": {
+      "kind": "image",
+      "bytes": 4304
+    },
+    "media/img/nds-culturapop-silhueta.webp": {
+      "kind": "image",
+      "silhouetteOf": "media/img/nds-culturapop.webp",
+      "bytes": 460
+    },
+    "media/img/nds-gaming.webp": {
+      "kind": "image",
+      "bytes": 3998
+    },
+    "media/img/nds-gaming-silhueta.webp": {
+      "kind": "image",
+      "silhouetteOf": "media/img/nds-gaming.webp",
+      "bytes": 406
+    },
+    "media/img/nds-series.webp": {
+      "kind": "image",
+      "bytes": 4372
+    },
+    "media/img/nds-series-silhueta.webp": {
+      "kind": "image",
+      "silhouetteOf": "media/img/nds-series.webp",
+      "bytes": 426
+    },
+    "media/img/nds-favorito.webp": {
+      "kind": "image",
+      "bytes": 3460
+    },
+    "media/img/nds-favorito-silhueta.webp": {
+      "kind": "image",
+      "silhouetteOf": "media/img/nds-favorito.webp",
+      "bytes": 416
+    }
+  }
+}

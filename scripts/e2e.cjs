@@ -13,7 +13,7 @@ fs.mkdirSync(OUT, { recursive: true });
 
 // Gera um mapa "texto da pergunta -> texto da resposta certa" a partir do banco.
 const esbuild = require('esbuild');
-const bundled = esbuild.buildSync({ entryPoints: [path.join(__dirname, '..', 'src/data/questions/index.ts')], bundle: true, format: 'cjs', write: false, platform: 'node' });
+const bundled = esbuild.buildSync({ entryPoints: [path.join(__dirname, '..', 'src/data/questions/index.ts')], bundle: true, format: 'cjs', write: false, platform: 'node', define: { 'import.meta.env': '{}' } });
 const mod = { exports: {} };
 new Function('module', 'exports', 'require', bundled.outputFiles[0].text)(mod, mod.exports, require);
 const ANSWERS = new Map(mod.exports.QUESTION_BANK.map((q) => [q.question, q.options['abcd'.indexOf(q.correctOptionId)]]));
