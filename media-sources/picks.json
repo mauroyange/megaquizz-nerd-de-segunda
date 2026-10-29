@@ -1,0 +1,73 @@
+{
+  "audio-valkyries": "File:Richard Wagner - Ride of the Valkyries.ogg",
+  "audio-zarathustra": "File:Richard Strauss - Also Sprach Zarathustra.ogg",
+  "audio-mountainking": "File:Musopen - In the Hall Of The Mountain King.ogg",
+  "audio-toccata": "File:Toccata et Fugue BWV565.ogg",
+  "audio-sorcerer": "File:Apprentice.ogg",
+  "audio-holstmars": "File:Holst- mars.ogg",
+  "audio-williamtell": "File:Gioachino Rossini, William Tell Overture (military band version, 2000).ogg",
+  "cos-spiderman": {
+    "title": "File:Cosplay of Spider-Man at Brussels Comic Con 2019 (47248209562).jpg",
+    "width": 900
+  },
+  "cos-naruto": {
+    "title": "File:Cosplay - AWA15 - Naruto Uzumaki (3982533553).jpg",
+    "width": 900
+  },
+  "cos-luffy": {
+    "title": "File:Cosplay - AWA15 - Monkey D. Luffy (3982426960).jpg",
+    "width": 900
+  },
+  "cos-goku": {
+    "title": "File:Cosplayer of Goku, Dragon Ball Z at CWT16 20070812.jpg",
+    "width": 900
+  },
+  "cos-ichigo": {
+    "title": "File:Cosplayer of Ichigo Kurosaki, Bleach at 2015FFTC 20150801.jpg",
+    "width": 900
+  },
+  "cos-tanjiro": {
+    "title": "File:Cosplay of Tanjiro Kamado at Sutera Cosplay Fest 2021.jpg",
+    "width": 900
+  },
+  "cos-gojo": {
+    "title": "File:Satoru Gojō cosplay.jpg",
+    "width": 900
+  },
+  "cos-deku": {
+    "title": "File:Cosplay of Izuku Midoriya from My Hero Academia at GalaxyCon Costume Competition - GalaxyCon Richmond 2020 (PED 3256 (49665936498).jpg",
+    "width": 900
+  },
+  "cos-gandalf": {
+    "title": "File:MCM 2013 - Gandalf (8979307760).jpg",
+    "width": 900
+  },
+  "darkhedges": {
+    "title": "File:Dark Hedges near Armoy, Co Antrim (cropped).jpg",
+    "width": 900
+  },
+  "dubrovnik": {
+    "title": "File:Dubrovnik-panorama from town walls.JPG",
+    "width": 900
+  },
+  "littlenemo": {
+    "title": "File:Little nemo the walking bed.jpg",
+    "width": 900
+  },
+  "yellowkid": {
+    "title": "File:Yellow Kid 02829v.jpg",
+    "width": 900
+  },
+  "hokusaimanga": {
+    "title": "File:Hokusai Manga 01.jpg",
+    "width": 900
+  },
+  "deepblue": {
+    "title": "File:Deep Blue.jpg",
+    "width": 900
+  },
+  "asimo": {
+    "title": "File:HONDA ASIMO.jpg",
+    "width": 900
+  }
+}
