@@ -10,6 +10,7 @@ import ep08 from './ep08';
 import ep09 from './ep09';
 import ep10 from './ep10';
 import media from './media';
+import mediaWeb from './media-web';
 import { q } from './helpers';
 
 /**
@@ -20,7 +21,7 @@ import { q } from './helpers';
 export const QUESTION_BANK: Question[] = [
   ...ep01, ...ep02, ...ep03, ...ep04, ...ep05,
   ...ep06, ...ep07, ...ep08, ...ep09, ...ep10,
-  ...media,
+  ...media, ...mediaWeb,
 ];
 
 // Só para testes automáticos (VITE_DEMO_AUDIO=1): uma pergunta com um tom gerado,

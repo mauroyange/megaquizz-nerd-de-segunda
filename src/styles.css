@@ -525,7 +525,9 @@ h1[tabindex="-1"]:focus, h2[tabindex="-1"]:focus { outline: none; }
 /* ───────── Perguntas com imagem e som ───────── */
 .q-media { margin: 0; }
 .q-image { position: relative; align-self: center; justify-self: center; width: min(260px, 70vw); aspect-ratio: 1; max-width: 100%; background: var(--fg); border: 3px solid #000; box-shadow: 8px 8px 0 var(--teal); border-radius: var(--radius); display: grid; place-items: center; padding: 16px; }
-.q-image img { width: 100%; height: 100%; object-fit: contain; image-rendering: pixelated; }
+.q-image img { width: 100%; height: 100%; object-fit: contain; }
+/* Só os ícones em pixel-art ficam com píxeis nítidos; fotografias e ilustrações não. */
+.q-image img[src*="/nds-"], .answer-img[src*="/nds-"] { image-rendering: pixelated; }
 .q-image.revealed img { animation: pop 0.45s ease-out; }
 .q-image figcaption { position: absolute; bottom: -14px; left: 50%; transform: translateX(-50%); font-family: var(--font-pixel); font-size: 0.6rem; background: var(--amber); color: var(--ink); padding: 6px 10px; border: 2px solid #000; white-space: nowrap; }
 .q-audio { display: flex; align-items: center; gap: 14px; background: var(--surface); border: 3px solid var(--indigo-brand); border-radius: var(--radius); padding: 12px 14px; box-shadow: 6px 6px 0 #000; }
@@ -540,7 +542,7 @@ h1[tabindex="-1"]:focus, h2[tabindex="-1"]:focus { outline: none; }
 .audio-bars i.done { background: var(--amber); }
 .answers.with-images .answer { flex-direction: column; align-items: center; text-align: center; padding: 12px 10px 14px; position: relative; }
 .answers.with-images .answer-key { position: absolute; top: 8px; left: 8px; }
-.answer-img { width: 96px; height: 96px; object-fit: contain; image-rendering: pixelated; background: var(--fg); border: 2px solid #000; padding: 6px; }
+.answer-img { width: 96px; height: 96px; object-fit: contain; background: var(--fg); border: 2px solid #000; padding: 6px; }
 .answers.with-images .answer-text { flex: none; }
 @media (max-width: 640px) {
   .answers.with-images { grid-template-columns: repeat(2, minmax(0, 1fr)); }

@@ -39,13 +39,27 @@ Tipos suportados (campo `media` e `optionImages` em `src/types/index.ts`):
 | **Alternativas em imagem** | "Qual destes objectos pertence a X?" | `optionImages: [a, b, c, d]` (o texto de `options` é a legenda) |
 | **Som** | "De que filme/anime é esta música?" | `media: { kind: 'audio', src: '….mp3', clipSeconds, alt, credit }` — tem +10 s de tempo, toca sozinho, botão e tecla **P** para repetir |
 
-Exemplos reais em `src/data/questions/media.ts` (usam só os ícones oficiais do programa).
+Exemplos reais:
+
+- `src/data/questions/media.ts`: ícones oficiais do programa (silhuetas, imagens, alternativas em imagem);
+- `src/data/questions/media-web.ts`: 18 perguntas com material da internet com **licença livre** (Wikimedia Commons): fotografias de cosplay (Homem-Aranha, Naruto, Luffy, Ichigo, Goku, Gojo, Deku, Gandalf), locais de filmagem de Game of Thrones, BD antiga em domínio público (Little Nemo, The Yellow Kid, Hokusai Manga), o Deep Blue, e 5 excertos de música clássica que o cinema tornou famosa (2001, Apocalypse Now, Fantasia, Star Wars, "Rei da Montanha"). Autor, licença e original de cada ficheiro em [`public/media/CREDITOS.md`](public/media/CREDITOS.md).
+
+**Ir buscar material livre à internet** (Wikimedia Commons, via GitHub Actions):
+
+1. Escrever as pesquisas em `media-sources/queries.json` e correr o workflow **Media (Wikimedia Commons)** com `search`. O resultado (só ficheiros com licença livre: domínio público, CC0, CC BY, CC BY-SA) fica no branch `media-raw`, em `search-results.json`.
+2. Escolher os ficheiros em `media-sources/picks.json` e correr o workflow com `download`. Os ficheiros e o `credits.json` (autor, licença, página) ficam no branch `media-raw`.
+3. `git fetch origin media-raw` e preparar cada ficheiro com `scripts/prepare-media.mjs` (abaixo). Acrescentar a linha em `public/media/CREDITOS.md` e o `credit` na pergunta.
+
+Evitar fotografias de crianças e imagens em que o nome da personagem apareça escrito (dava a resposta; `--cortar-topo` ajuda a tirar títulos).
 
 **Preparar os ficheiros** (requer ImageMagick e ffmpeg):
 
 ```bash
 # Imagem com fundo transparente → public/media/img/<nome>.webp (+ <nome>-silhueta.webp)
 node scripts/prepare-media.mjs imagem original.png ep01-miles --silhueta [--pixel] [--tamanho 360]
+
+# Fotografia → recorte quadrado (--gravidade north|center|south; --cortar-topo 20 tira 20% de cima)
+node scripts/prepare-media.mjs imagem foto.jpg cos-naruto --recortar --gravidade north --tamanho 420
 
 # Excerto de áudio → public/media/audio/<nome>.mp3 (mono, 64 kbps, fade, volume normalizado)
 node scripts/prepare-media.mjs audio musica.mp3 ep04-tema-gaga --inicio 42.5 --duracao 8
@@ -60,6 +74,7 @@ Teste no navegador: `scripts/e2e-media.cjs` (instruções no topo do ficheiro).
 - **Não existe uma duração "segura"** (a ideia dos "30 segundos" é um mito). Um excerto curto reduz o risco, mas não o elimina: usar música ou imagens oficiais de terceiros num jogo público de uma marca é uma utilização que, em princípio, precisa de autorização.
 - **Imagens**: preferir ilustrações próprias (ex.: fan art desenhada pela equipa, silhuetas redesenhadas), material de imprensa/kits oficiais cujos termos permitam este uso, ou imagens com licença aberta. Indicar sempre o crédito.
 - **Som**: preferir material autorizado — pedir à editora/distribuidora ou à entidade de gestão de direitos (em Angola, a SADIA), usar música de fãs com autorização do autor (ex.: artistas angolanos do TOP NerdBoard), ou excertos que a própria marca já tenha licenciado para uso digital. A licença de emissão da rádio normalmente **não** cobre a distribuição em site/app.
+- **Material livre da internet**: domínio público e licenças Creative Commons (CC0, CC BY, CC BY-SA) permitem este uso desde que se dê o crédito (autor, licença e origem). Para música, a composição **e** a gravação têm de ser livres: é por isso que só usamos música clássica antiga em gravações livres, nunca bandas sonoras comerciais. Fotografias de cosplay mostram fatos de personagens com direitos; o Commons aceita-as e o risco é baixo, mas se um titular pedir, retira-se.
 - Os ficheiros em `public/media/` ficam públicos no GitHub e no site. Se um titular de direitos pedir, retirar o ficheiro e a pergunta (a troca automática evita erros no jogo).
 
 ## Ranking geral online (Modo Episódios)

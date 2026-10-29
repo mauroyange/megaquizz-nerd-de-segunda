@@ -4,6 +4,8 @@
 //
 // Imagem (gera public/media/img/<nome>.webp e, com --silhueta, <nome>-silhueta.webp):
 //   node scripts/prepare-media.mjs imagem caminho/original.png <nome> [--silhueta] [--pixel] [--tamanho 360]
+//   Fotografias: --recortar enche o quadrado (corta as sobras) e --gravidade north|center|south
+//   escolhe o que fica; --cortar-topo 20 tira 20% de cima (por exemplo, um título que dava a resposta).
 //
 // Áudio (gera public/media/audio/<nome>.mp3, mono, com fade e volume normalizado):
 //   node scripts/prepare-media.mjs audio caminho/musica.mp3 <nome> --inicio 42.5 [--duracao 8]
@@ -48,7 +50,12 @@ if (kind === 'imagem' || kind === 'image') {
   fs.mkdirSync(outImg, { recursive: true });
   const size = Number(opt('--tamanho', '360'));
   const filter = flag('--pixel') ? ['-filter', 'point'] : [];
-  const base = ['-background', 'none', '-trim', '+repage', ...filter, '-resize', `${size}x${size}`, '-gravity', 'center', '-extent', `${size}x${size}`];
+  const top = Number(opt('--cortar-topo', '0'));
+  const pre = top > 0 ? ['-gravity', 'south', '-crop', `100%x${100 - top}%+0+0`, '+repage'] : [];
+  const fit = flag('--recortar')
+    ? ['-resize', `${size}x${size}^`, '-gravity', opt('--gravidade', 'center'), '-extent', `${size}x${size}`]
+    : ['-background', 'none', '-trim', '+repage', ...filter, '-resize', `${size}x${size}`, '-gravity', 'center', '-extent', `${size}x${size}`];
+  const base = ['-auto-orient', ...pre, ...fit, '-strip'];
   const full = path.join(outImg, `${name}.webp`);
   execFileSync('convert', [input, ...base, '-quality', '88', full]);
   record(full, { kind: 'image' });

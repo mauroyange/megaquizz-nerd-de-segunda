@@ -47,6 +47,13 @@ const unlockUntil = (n) => JSON.stringify({ version: 1, episodes: Object.fromEnt
   await p.screenshot({ path: `${OUT}/media-2-revelado.png`, fullPage: true });
   await p.keyboard.press('Enter');
 
+  // Avança pelas outras perguntas com imagem até chegar à do excerto de som.
+  for (let i = 0; i < 6 && !(await p.locator('.q-audio').count()); i++) {
+    await p.waitForTimeout(500);
+    if (await p.locator('.q-audio').count()) break;
+    await answerRight(p);
+    await p.keyboard.press('Enter');
+  }
   await p.waitForSelector('.q-audio');
   const t0 = Number((await p.locator('.timer-num').textContent()).replace(/\D/g, ''));
   ok(t0 >= 39 && t0 <= 40, `Pergunta com som tem tempo extra (${t0}s em vez de 30s)`);

@@ -116,6 +116,97 @@
       "kind": "image",
       "silhouetteOf": "media/img/nds-favorito.webp",
       "bytes": 416
+    },
+    "media/img/cos-spiderman.webp": {
+      "kind": "image",
+      "bytes": 23818
+    },
+    "media/img/cos-naruto.webp": {
+      "kind": "image",
+      "bytes": 24180
+    },
+    "media/img/cos-luffy.webp": {
+      "kind": "image",
+      "bytes": 18424
+    },
+    "media/img/cos-goku.webp": {
+      "kind": "image",
+      "bytes": 29796
+    },
+    "media/img/cos-ichigo.webp": {
+      "kind": "image",
+      "bytes": 23266
+    },
+    "media/img/cos-gojo.webp": {
+      "kind": "image",
+      "bytes": 16346
+    },
+    "media/img/cos-deku.webp": {
+      "kind": "image",
+      "bytes": 14138
+    },
+    "media/img/cos-gandalf.webp": {
+      "kind": "image",
+      "bytes": 22322
+    },
+    "media/img/ibm-deepblue.webp": {
+      "kind": "image",
+      "bytes": 7944
+    },
+    "media/img/got-darkhedges.webp": {
+      "kind": "image",
+      "bytes": 45146
+    },
+    "media/img/got-dubrovnik.webp": {
+      "kind": "image",
+      "bytes": 55952
+    },
+    "media/img/bd-littlenemo.webp": {
+      "kind": "image",
+      "bytes": 50814
+    },
+    "media/img/bd-yellowkid.webp": {
+      "kind": "image",
+      "bytes": 59780
+    },
+    "media/img/manga-hokusai.webp": {
+      "kind": "image",
+      "bytes": 32528
+    },
+    "media/audio/musica-zarathustra.mp3": {
+      "kind": "audio",
+      "seconds": 10,
+      "source": "audio-zarathustra.ogg",
+      "start": 12,
+      "bytes": 80501
+    },
+    "media/audio/musica-valquirias.mp3": {
+      "kind": "audio",
+      "seconds": 9,
+      "source": "audio-valkyries.ogg",
+      "start": 22,
+      "bytes": 72559
+    },
+    "media/audio/musica-toccata.mp3": {
+      "kind": "audio",
+      "seconds": 10,
+      "source": "audio-toccata.ogg",
+      "start": 0,
+      "bytes": 80501
+    },
+    "media/audio/musica-marte.mp3": {
+      "kind": "audio",
+      "seconds": 9,
+      "source": "audio-holstmars.ogg",
+      "start": 48,
+      "bytes": 72559
+    },
+    "media/audio/musica-reidamontanha.mp3": {
+      "kind": "audio",
+      "seconds": 9,
+      "source": "audio-mountainking.ogg",
+      "start": 102,
+      "bytes": 72559
     }
   }
 }

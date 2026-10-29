@@ -1,0 +1,35 @@
+name: Media (Wikimedia Commons)
+
+# Pesquisa ou descarrega ficheiros com licença livre do Wikimedia Commons e guarda o
+# resultado no branch media-raw (não é publicado no site). Ver scripts/commons.mjs.
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: search ou download
+        required: true
+        default: search
+        type: choice
+        options: [search, download]
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: node scripts/commons.mjs ${{ inputs.mode }}
+      - name: Guardar no branch media-raw
+        run: |
+          cd media-raw
+          git init -q -b media-raw
+          git config user.name "github-actions[bot]"
+          git config user.email "41898+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -qm "Media ${{ inputs.mode }} (${{ github.run_id }})"
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" media-raw
